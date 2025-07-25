@@ -2,7 +2,7 @@ import type * as motionone from "@motionone/dom"
 import type {PropertiesHyphen} from "csstype"
 import type {JSX, ParentProps} from "solid-js"
 
-export type {VariantDefinition, Options} from "@motionone/dom"
+export type {Options, VariantDefinition} from "@motionone/dom"
 
 export interface MotionEventHandlers {
 	onMotionStart?: (event: motionone.MotionEvent) => void
@@ -33,7 +33,10 @@ declare module "@motionone/dom" {
 	}
 }
 
-export type MotionComponentProps = ParentProps<MotionEventHandlers & motionone.Options>
+export type MotionComponentProps = ParentProps<MotionEventHandlers & motionone.Options> & {
+	layout?: boolean | string
+	layoutId?: string
+}
 
 export type MotionComponent = {
 	// <Motion />

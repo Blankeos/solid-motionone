@@ -16,13 +16,13 @@ importers:
         version: 10.18.0
       '@solid-primitives/props':
         specifier: ^3.1.11
-        version: 3.2.1(solid-js@1.9.5)
+        version: 3.2.1(solid-js@1.9.7)
       '@solid-primitives/refs':
         specifier: ^1.0.8
-        version: 1.1.1(solid-js@1.9.5)
+        version: 1.1.1(solid-js@1.9.7)
       '@solid-primitives/transition-group':
         specifier: ^1.0.5
-        version: 1.1.1(solid-js@1.9.5)
+        version: 1.1.1(solid-js@1.9.7)
       csstype:
         specifier: ^3.1.3
         version: 3.1.3
@@ -38,7 +38,7 @@ importers:
         version: 29.6.3
       '@solidjs/testing-library':
         specifier: ^0.8.5
-        version: 0.8.10(solid-js@1.9.5)
+        version: 0.8.10(solid-js@1.9.7)
       '@types/jest':
         specifier: ^29.5.11
         version: 29.5.14
@@ -79,17 +79,26 @@ importers:
         specifier: ^3.1.1
         version: 3.5.3
       solid-js:
-        specifier: ^1.8.17
-        version: 1.9.5
+        specifier: ^1.9.7
+        version: 1.9.7
       tsup:
         specifier: ^8.0.1
-        version: 8.4.0(typescript@5.8.3)
+        version: 8.4.0(postcss@8.5.6)(typescript@5.8.3)
       tsup-preset-solid:
         specifier: ^2.2.0
-        version: 2.2.0(esbuild@0.25.3)(solid-js@1.9.5)(tsup@8.4.0(typescript@5.8.3))
+        version: 2.2.0(esbuild@0.25.3)(solid-js@1.9.7)(tsup@8.4.0(postcss@8.5.6)(typescript@5.8.3))
       typescript:
         specifier: ^5.3.3
         version: 5.8.3
+      vike:
+        specifier: 0.4.236
+        version: 0.4.236(vite@6.3.5(@types/node@20.17.31))
+      vike-solid:
+        specifier: ^0.7.11
+        version: 0.7.11(solid-js@1.9.7)(vike@0.4.236(vite@6.3.5(@types/node@20.17.31)))(vite@6.3.5(@types/node@20.17.31))
+      vite:
+        specifier: ^6.3.5
+        version: 6.3.5(@types/node@20.17.31)
 
 packages:
 
@@ -686,6 +695,21 @@ packages:
   '@bcoe/v8-coverage@0.2.3':
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
 
+  '@brillout/import@0.2.6':
+    resolution: {integrity: sha512-1GUTmADc8trUC1YSW2lp9r6PmwluMoEyHajnE1kxVdbKGD0wJOlq/DvTWMUqLtBDCnQR+n//qgMtz6HwA/lotA==}
+
+  '@brillout/json-serializer@0.5.16':
+    resolution: {integrity: sha512-X9CujUMruFxH35cyFgzebg3biBBRz4ouMmjJZwIa04D188du0V47QFcIK7YXKl3z0pue+9NccQ+1zaxhB49r1Q==}
+
+  '@brillout/picocolors@1.0.28':
+    resolution: {integrity: sha512-FBsirUdUlmjmeUlEuqfnUoKAZUt+d0VfMVBYUsFQrDFEV9Rm/QDyG69PSQtQbI6SZQNiZuAWuyhE5USflzx6iQ==}
+
+  '@brillout/require-shim@0.1.2':
+    resolution: {integrity: sha512-3I4LRHnVZXoSAsEoni5mosq9l6eiJED58d9V954W4CIZ88AUfYBanWGBGbJG3NztaRTpFHEA6wB3Hn93BmmJdg==}
+
+  '@brillout/vite-plugin-server-entry@0.7.9':
+    resolution: {integrity: sha512-mJrUakPTj8Zf3Pm4beKmHowfozHOLS/deMqheYYIlqK8FSR4Hd3vMeFQBL/rxLLd+svIlW/j2K3M2SVPDmvX7A==}
+
   '@esbuild/aix-ppc64@0.25.3':
     resolution: {integrity: sha512-W8bFfPA8DowP8l//sxjJLSLkD8iEjMc7cBVyP+u4cEv9sM7mdUCkgsj+t0n/BWPFtv7WWCN5Yzj0N6FJNUUqBQ==}
     engines: {node: '>=18'}
@@ -996,6 +1020,9 @@ packages:
   '@pkgjs/parseargs@0.11.0':
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
     engines: {node: '>=14'}
+
+  '@polka/url@1.0.0-next.29':
+    resolution: {integrity: sha512-wwQAWhWSuHaag8c4q/KN/vCoeOJYshAIvMQwD4GpSb3OiZklFfvAgmj0VCBBImRpuF/aFgIRzllXlVX93Jevww==}
 
   '@rollup/rollup-android-arm-eabi@4.40.0':
     resolution: {integrity: sha512-+Fbls/diZ0RDerhE8kyC6hjADCXA1K4yVNlH0EYfd2XjyH0UGgzaQ8MlT0pCXAThfxv3QUAczHaL+qSv1E4/Cg==}
@@ -1632,6 +1659,9 @@ packages:
     resolution: {integrity: sha512-Zf5H2Kxt2xjTvbJvP2ZWLEICxA6j+hAmMzIlypy4xcBg1vKVnx89Wy0GbS+kf5cwCVFFzdCFh2XSCFNULS6csw==}
     engines: {node: '>= 0.4'}
 
+  es-module-lexer@1.7.0:
+    resolution: {integrity: sha512-jEQoCwk8hyb2AZziIOLhDqpm5+2ww5uIE6lkO/6jcOCusfk6LhMHpXXfBLXTZ7Ydyt0j4VoUQv6uGNYbdW+kBA==}
+
   es-object-atoms@1.1.1:
     resolution: {integrity: sha512-FGgH2h8zKNim9ljj7dankFPcICIK9Cp5bm+c2gQSYePhpaG5+esrLODihIorn+Pe6FGJzWhXQotPv73jTaldXA==}
     engines: {node: '>= 0.4'}
@@ -1971,8 +2001,16 @@ packages:
     resolution: {integrity: sha512-hFoiJiTl63nn+kstHGBtewWSKnQLpyb155KHheA1l39uvtO9nWIop1p3udqPcUd/xbF1VLMO4n7OI6p7RbngDg==}
     engines: {node: '>=8'}
 
+  is-what@4.1.16:
+    resolution: {integrity: sha512-ZhMwEosbFJkA0YhFnNDgTM4ZxDRsS6HqTo7qsZM08fehyRYIYa0yHu5R6mgo1n/8MgaPBXiPimPD77baVFYg+A==}
+    engines: {node: '>=12.13'}
+
   isarray@1.0.0:
     resolution: {integrity: sha512-VLghIWNM6ELQzo7zwmcg0NmTVyWKYjvIeM83yjp0wRDTmUnrM678fQbcKBo6n2CJEF0szoG//ytg+TKla89ALQ==}
+
+  isbot-fast@1.2.0:
+    resolution: {integrity: sha512-twjuQzy2gKMDVfKGQyQqrx6Uy4opu/fiVUTTpdqtFsd7OQijIp5oXvb27n5EemYXaijh5fomndJt/SPRLsEdSg==}
+    engines: {node: '>=6.0.0'}
 
   isexe@2.0.0:
     resolution: {integrity: sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==}
@@ -2246,6 +2284,9 @@ packages:
     resolution: {integrity: sha512-h5bgJWpxJNswbU7qCrV0tIKQCaS3blPDrqKWx+QxzuzL1zGUzij9XCWLrSLsJPu5t+eWA/ycetzYAO5IOMcWAQ==}
     hasBin: true
 
+  magic-string@0.30.17:
+    resolution: {integrity: sha512-sNPKHvyjVf7gyjwS4xGTaW/mCnF8wnjtifKBEhxfZ7E/S8tQ0rssrwGNn6q8JH/ohItJfSQp9mBtQYuTlH5QnA==}
+
   make-dir@4.0.0:
     resolution: {integrity: sha512-hXdUTZYIVOt1Ex//jAQi+wTZZpUpwBj/0QsOzqegb3rGMMeJiSEu5xLHnYfBrRV4RH2+OCSOO95Is/7x1WJ4bw==}
     engines: {node: '>=10'}
@@ -2260,6 +2301,10 @@ packages:
   memory-fs@0.5.0:
     resolution: {integrity: sha512-jA0rdU5KoQMC0e6ppoNRtpp6vjFq6+NY7r8hywnC7V+1Xj/MtHwGIbB1QaK/dunyjWteJzmkpd7ooeWg10T7GA==}
     engines: {node: '>=4.3.0 <5.0.0 || >=5.10'}
+
+  merge-anything@5.1.7:
+    resolution: {integrity: sha512-eRtbOb1N5iyH0tkQDAoQ4Ipsp/5qSR79Dzrz8hEPxRX10RWWR/iQXdoKmBSRCThY1Fh5EhISDtpSc93fpxUniQ==}
+    engines: {node: '>=12.13'}
 
   merge-stream@2.0.0:
     resolution: {integrity: sha512-abv/qOcuPfk3URPfDzmZU1LKmuw8kT+0nIHvKrKgFrwifol/doWcdA4ZqsWQ8ENrFKkd67Mfpo/LovbIUsbt3w==}
@@ -2299,11 +2344,20 @@ packages:
     resolution: {integrity: sha512-qOOzS1cBTWYF4BH8fVePDBOO9iptMnGUEZwNc/cMWnTV2nVLZ7VoNWEPHkYczZA0pdoA7dl6e7FL659nX9S2aw==}
     engines: {node: '>=16 || 14 >=14.17'}
 
+  mrmime@2.0.1:
+    resolution: {integrity: sha512-Y3wQdFg2Va6etvQ5I82yUhGdsKrcYox6p7FfL1LbK2J4V01F9TGlepTIhnK24t7koZibmg82KGglhA1XK5IsLQ==}
+    engines: {node: '>=10'}
+
   ms@2.1.3:
     resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
 
   mz@2.7.0:
     resolution: {integrity: sha512-z81GNO7nnYMEhrGh9LeymoE4+Yr0Wn5McHIZMK5cfQCl+NDX08sCZgUc9/6MHni9IWuFLm1Z3HTCXu2z9fN62Q==}
+
+  nanoid@3.3.11:
+    resolution: {integrity: sha512-N8SpfPUnUp1bK+PMYW8qSWdl9U+wwNWI4QKxOYDy9JAro3WMX7p2OeVRF9v+347pnakNevPmiHhNmZ2HbFA76w==}
+    engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
+    hasBin: true
 
   natural-compare@1.4.0:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
@@ -2433,6 +2487,10 @@ packages:
         optional: true
       yaml:
         optional: true
+
+  postcss@8.5.6:
+    resolution: {integrity: sha512-3Ybi1tAuwAP9s0r1UQ2J4n5Y0G05bJkpUIO0/bI9MhwmD70S5aTWbXGBwxHrelT+XM1k6dM0pk+SwNkpTRN7Pg==}
+    engines: {node: ^10 || ^12 || >=14}
 
   prelude-ls@1.2.1:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
@@ -2578,14 +2636,14 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
 
-  seroval-plugins@1.2.1:
-    resolution: {integrity: sha512-H5vs53+39+x4Udwp4J5rNZfgFuA+Lt+uU+09w1gYBVWomtAl98B+E9w7yC05Xc81/HgLvJdlyqJbU0fJCKCmdw==}
+  seroval-plugins@1.3.2:
+    resolution: {integrity: sha512-0QvCV2lM3aj/U3YozDiVwx9zpH0q8A60CTWIv4Jszj/givcudPb48B+rkU5D51NJ0pTpweGMttHjboPa9/zoIQ==}
     engines: {node: '>=10'}
     peerDependencies:
       seroval: ^1.0
 
-  seroval@1.2.1:
-    resolution: {integrity: sha512-yBxFFs3zmkvKNmR0pFSU//rIsYjuX418TnlDmc2weaq5XFDqDIV/NOMPBoLrbxjLH42p4UzRuXHryXh9dYcKcw==}
+  seroval@1.3.2:
+    resolution: {integrity: sha512-RbcPH1n5cfwKrru7v7+zrZvjLurgHhGyso3HTyGtRivGWgYjbOmGuivCQaORNELjNONoK35nj28EoWul9sb1zQ==}
     engines: {node: '>=10'}
 
   shebang-command@2.0.0:
@@ -2603,6 +2661,10 @@ packages:
     resolution: {integrity: sha512-bzyZ1e88w9O1iNJbKnOlvYTrWPDl46O1bG0D3XInv+9tkPrxrN8jUUTiFlDkkmKWgn1M6CfIA13SuGqOa9Korw==}
     engines: {node: '>=14'}
 
+  sirv@3.0.1:
+    resolution: {integrity: sha512-FoqMu0NCGBLCcAkS1qA+XJIQTR6/JHfQXl+uGteNCQ76T91DMUjPa9xfmeqMY3z80nLSg9yQmNjK0Px6RWsH/A==}
+    engines: {node: '>=18'}
+
   sisteransi@1.0.5:
     resolution: {integrity: sha512-bLGGlR1QxBcynn2d5YmDX4MGjlZvy2MRBDRNHLJ8VI6l6+9FUiyTFNJ0IveOSP0bcXgVDPRcfGqA0pjaqUpfVg==}
 
@@ -2610,8 +2672,17 @@ packages:
     resolution: {integrity: sha512-g9Q1haeby36OSStwb4ntCGGGaKsaVSjQ68fBxoQcutl5fS1vuY18H3wSt3jFyFtrkx+Kz0V1G85A4MyAdDMi2Q==}
     engines: {node: '>=8'}
 
-  solid-js@1.9.5:
-    resolution: {integrity: sha512-ogI3DaFcyn6UhYhrgcyRAMbu/buBJitYQASZz5WzfQVPP10RD2AbCoRZ517psnezrasyCbWzIxZ6kVqet768xw==}
+  solid-js@1.9.7:
+    resolution: {integrity: sha512-/saTKi8iWEM233n5OSi1YHCCuh66ZIQ7aK2hsToPe4tqGm7qAejU1SwNuTPivbWAYq7SjuHVVYxxuZQNRbICiw==}
+
+  solid-refresh@0.6.3:
+    resolution: {integrity: sha512-F3aPsX6hVw9ttm5LYlth8Q15x6MlI/J3Dn+o3EQyRTtTxidepSTwAYdozt01/YA+7ObcciagGEyXIopGZzQtbA==}
+    peerDependencies:
+      solid-js: ^1.3
+
+  source-map-js@1.2.1:
+    resolution: {integrity: sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==}
+    engines: {node: '>=0.10.0'}
 
   source-map-support@0.5.13:
     resolution: {integrity: sha512-SHSKFHadjVA5oR4PPqhtAVdcBWwRYVd6g6cAXnIbRiIwc2EhPrTuKUBdSLvlEKyIP3GCf89fltvcZiP9MMFA1w==}
@@ -2717,6 +2788,10 @@ packages:
   to-regex-range@5.0.1:
     resolution: {integrity: sha512-65P7iz6X5yEr1cwcgvQxbbIw7Uk3gOy5dIdtZ4rDveLqhrdJP+Li/Hx6tyK0NEb+2GCyneCMJiGqrADCSNk8sQ==}
     engines: {node: '>=8.0'}
+
+  totalist@3.0.1:
+    resolution: {integrity: sha512-sf4i37nQ2LBx4m3wB74y+ubopq6W/dIzXg0FDGjsYnZHVa1Da8FH853wlL2gtUhg+xJXjfk3kUZS3BRoQeoQBQ==}
+    engines: {node: '>=6'}
 
   tough-cookie@4.1.4:
     resolution: {integrity: sha512-Loo5UUvLD9ScZ6jh8beX1T6sO1w2/MpCRpEP7V280GKMVUQ0Jzar2U3UJPsrdbziLEMMhu3Ujnq//rhiFuIeag==}
@@ -2837,6 +2912,84 @@ packages:
 
   validate-html-nesting@1.2.2:
     resolution: {integrity: sha512-hGdgQozCsQJMyfK5urgFcWEqsSSrK63Awe0t/IMR0bZ0QMtnuaiHzThW81guu3qx9abLi99NEuiaN6P9gVYsNg==}
+
+  vike-solid@0.7.11:
+    resolution: {integrity: sha512-XWfjCr3TE1Wfd2ijhQU9X8Rj9U6yyJsSatulDV6K4AtGPJOmdfQ7tQJzpRKH0eqLT/500R01W5/AiUKiOLqatg==}
+    peerDependencies:
+      solid-js: ^1.8.7
+      vike: '>=0.4.195'
+      vite: '>=5.0.0'
+
+  vike@0.4.236:
+    resolution: {integrity: sha512-8IRz4OmWGx5YwVBP9Zql405klEgys6tNQh3//IcD4tjhhgIoWm42rtvGb7TVfXX8CNX8DmEPHEvHTsrhk1y7ww==}
+    engines: {node: '>=18.0.0'}
+    hasBin: true
+    peerDependencies:
+      react-streaming: '>=0.3.42'
+      vite: '>=5.1.0'
+    peerDependenciesMeta:
+      react-streaming:
+        optional: true
+      vite:
+        optional: true
+
+  vite-plugin-solid@2.11.7:
+    resolution: {integrity: sha512-5TgK1RnE449g0Ryxb9BXqem89RSy7fE8XGVCo+Gw84IHgPuPVP7nYNP6WBVAaY/0xw+OqfdQee+kusL0y3XYNg==}
+    peerDependencies:
+      '@testing-library/jest-dom': ^5.16.6 || ^5.17.0 || ^6.*
+      solid-js: ^1.7.2
+      vite: ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0
+    peerDependenciesMeta:
+      '@testing-library/jest-dom':
+        optional: true
+
+  vite@6.3.5:
+    resolution: {integrity: sha512-cZn6NDFE7wdTpINgs++ZJ4N49W2vRp8LCKrn3Ob1kYNtOo21vfDoaV5GzBfLU4MovSAB8uNRm4jgzVQZ+mBzPQ==}
+    engines: {node: ^18.0.0 || ^20.0.0 || >=22.0.0}
+    hasBin: true
+    peerDependencies:
+      '@types/node': ^18.0.0 || ^20.0.0 || >=22.0.0
+      jiti: '>=1.21.0'
+      less: '*'
+      lightningcss: ^1.21.0
+      sass: '*'
+      sass-embedded: '*'
+      stylus: '*'
+      sugarss: '*'
+      terser: ^5.16.0
+      tsx: ^4.8.1
+      yaml: ^2.4.2
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+      jiti:
+        optional: true
+      less:
+        optional: true
+      lightningcss:
+        optional: true
+      sass:
+        optional: true
+      sass-embedded:
+        optional: true
+      stylus:
+        optional: true
+      sugarss:
+        optional: true
+      terser:
+        optional: true
+      tsx:
+        optional: true
+      yaml:
+        optional: true
+
+  vitefu@1.1.1:
+    resolution: {integrity: sha512-B/Fegf3i8zh0yFbpzZ21amWzHmuNlLlmJT6n7bu5e+pCHUKQIfXSYokrqOBGEMMe9UG2sostKQF9mml/vYaWJQ==}
+    peerDependencies:
+      vite: ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0-beta.0
+    peerDependenciesMeta:
+      vite:
+        optional: true
 
   w3c-xmlserializer@4.0.0:
     resolution: {integrity: sha512-d+BFHzbiCx6zGfz0HyQ6Rg69w9k19nviJspaj4yNscGjrHu94sVP+aRm75yEbCh+r2/yR+7q6hux9LVtbuTGBw==}
@@ -3683,6 +3836,19 @@ snapshots:
 
   '@bcoe/v8-coverage@0.2.3': {}
 
+  '@brillout/import@0.2.6': {}
+
+  '@brillout/json-serializer@0.5.16': {}
+
+  '@brillout/picocolors@1.0.28': {}
+
+  '@brillout/require-shim@0.1.2': {}
+
+  '@brillout/vite-plugin-server-entry@0.7.9':
+    dependencies:
+      '@brillout/import': 0.2.6
+      '@brillout/picocolors': 1.0.28
+
   '@esbuild/aix-ppc64@0.25.3':
     optional: true
 
@@ -4041,6 +4207,8 @@ snapshots:
   '@pkgjs/parseargs@0.11.0':
     optional: true
 
+  '@polka/url@1.0.0-next.29': {}
+
   '@rollup/rollup-android-arm-eabi@4.40.0':
     optional: true
 
@@ -4111,28 +4279,28 @@ snapshots:
     dependencies:
       '@sinonjs/commons': 3.0.1
 
-  '@solid-primitives/props@3.2.1(solid-js@1.9.5)':
+  '@solid-primitives/props@3.2.1(solid-js@1.9.7)':
     dependencies:
-      '@solid-primitives/utils': 6.3.1(solid-js@1.9.5)
-      solid-js: 1.9.5
+      '@solid-primitives/utils': 6.3.1(solid-js@1.9.7)
+      solid-js: 1.9.7
 
-  '@solid-primitives/refs@1.1.1(solid-js@1.9.5)':
+  '@solid-primitives/refs@1.1.1(solid-js@1.9.7)':
     dependencies:
-      '@solid-primitives/utils': 6.3.1(solid-js@1.9.5)
-      solid-js: 1.9.5
+      '@solid-primitives/utils': 6.3.1(solid-js@1.9.7)
+      solid-js: 1.9.7
 
-  '@solid-primitives/transition-group@1.1.1(solid-js@1.9.5)':
+  '@solid-primitives/transition-group@1.1.1(solid-js@1.9.7)':
     dependencies:
-      solid-js: 1.9.5
+      solid-js: 1.9.7
 
-  '@solid-primitives/utils@6.3.1(solid-js@1.9.5)':
+  '@solid-primitives/utils@6.3.1(solid-js@1.9.7)':
     dependencies:
-      solid-js: 1.9.5
+      solid-js: 1.9.7
 
-  '@solidjs/testing-library@0.8.10(solid-js@1.9.5)':
+  '@solidjs/testing-library@0.8.10(solid-js@1.9.7)':
     dependencies:
       '@testing-library/dom': 10.4.0
-      solid-js: 1.9.5
+      solid-js: 1.9.7
 
   '@testing-library/dom@10.4.0':
     dependencies:
@@ -4673,6 +4841,8 @@ snapshots:
 
   es-errors@1.3.0: {}
 
+  es-module-lexer@1.7.0: {}
+
   es-object-atoms@1.1.1:
     dependencies:
       es-errors: 1.3.0
@@ -4684,13 +4854,13 @@ snapshots:
       has-tostringtag: 1.0.2
       hasown: 2.0.2
 
-  esbuild-plugin-solid@0.5.0(esbuild@0.25.3)(solid-js@1.9.5):
+  esbuild-plugin-solid@0.5.0(esbuild@0.25.3)(solid-js@1.9.7):
     dependencies:
       '@babel/core': 7.26.10
       '@babel/preset-typescript': 7.27.0(@babel/core@7.26.10)
       babel-preset-solid: 1.9.5(@babel/core@7.26.10)
       esbuild: 0.25.3
-      solid-js: 1.9.5
+      solid-js: 1.9.7
     transitivePeerDependencies:
       - supports-color
 
@@ -5070,7 +5240,11 @@ snapshots:
 
   is-stream@2.0.1: {}
 
+  is-what@4.1.16: {}
+
   isarray@1.0.0: {}
+
+  isbot-fast@1.2.0: {}
 
   isexe@2.0.0: {}
 
@@ -5545,6 +5719,10 @@ snapshots:
 
   lz-string@1.5.0: {}
 
+  magic-string@0.30.17:
+    dependencies:
+      '@jridgewell/sourcemap-codec': 1.5.0
+
   make-dir@4.0.0:
     dependencies:
       semver: 7.7.1
@@ -5559,6 +5737,10 @@ snapshots:
     dependencies:
       errno: 0.1.8
       readable-stream: 2.3.8
+
+  merge-anything@5.1.7:
+    dependencies:
+      is-what: 4.1.16
 
   merge-stream@2.0.0: {}
 
@@ -5591,6 +5773,8 @@ snapshots:
 
   minipass@7.1.2: {}
 
+  mrmime@2.0.1: {}
+
   ms@2.1.3: {}
 
   mz@2.7.0:
@@ -5598,6 +5782,8 @@ snapshots:
       any-promise: 1.3.0
       object-assign: 4.1.1
       thenify-all: 1.6.0
+
+  nanoid@3.3.11: {}
 
   natural-compare@1.4.0: {}
 
@@ -5694,9 +5880,17 @@ snapshots:
     dependencies:
       find-up: 4.1.0
 
-  postcss-load-config@6.0.1:
+  postcss-load-config@6.0.1(postcss@8.5.6):
     dependencies:
       lilconfig: 3.1.3
+    optionalDependencies:
+      postcss: 8.5.6
+
+  postcss@8.5.6:
+    dependencies:
+      nanoid: 3.3.11
+      picocolors: 1.1.1
+      source-map-js: 1.2.1
 
   prelude-ls@1.2.1: {}
 
@@ -5846,11 +6040,11 @@ snapshots:
 
   semver@7.7.1: {}
 
-  seroval-plugins@1.2.1(seroval@1.2.1):
+  seroval-plugins@1.3.2(seroval@1.3.2):
     dependencies:
-      seroval: 1.2.1
+      seroval: 1.3.2
 
-  seroval@1.2.1: {}
+  seroval@1.3.2: {}
 
   shebang-command@2.0.0:
     dependencies:
@@ -5862,15 +6056,32 @@ snapshots:
 
   signal-exit@4.1.0: {}
 
+  sirv@3.0.1:
+    dependencies:
+      '@polka/url': 1.0.0-next.29
+      mrmime: 2.0.1
+      totalist: 3.0.1
+
   sisteransi@1.0.5: {}
 
   slash@3.0.0: {}
 
-  solid-js@1.9.5:
+  solid-js@1.9.7:
     dependencies:
       csstype: 3.1.3
-      seroval: 1.2.1
-      seroval-plugins: 1.2.1(seroval@1.2.1)
+      seroval: 1.3.2
+      seroval-plugins: 1.3.2(seroval@1.3.2)
+
+  solid-refresh@0.6.3(solid-js@1.9.7):
+    dependencies:
+      '@babel/generator': 7.27.0
+      '@babel/helper-module-imports': 7.25.9
+      '@babel/types': 7.27.0
+      solid-js: 1.9.7
+    transitivePeerDependencies:
+      - supports-color
+
+  source-map-js@1.2.1: {}
 
   source-map-support@0.5.13:
     dependencies:
@@ -5977,6 +6188,8 @@ snapshots:
     dependencies:
       is-number: 7.0.0
 
+  totalist@3.0.1: {}
+
   tough-cookie@4.1.4:
     dependencies:
       psl: 1.15.0
@@ -6004,16 +6217,16 @@ snapshots:
 
   tslib@2.8.1: {}
 
-  tsup-preset-solid@2.2.0(esbuild@0.25.3)(solid-js@1.9.5)(tsup@8.4.0(typescript@5.8.3)):
+  tsup-preset-solid@2.2.0(esbuild@0.25.3)(solid-js@1.9.7)(tsup@8.4.0(postcss@8.5.6)(typescript@5.8.3)):
     dependencies:
-      esbuild-plugin-solid: 0.5.0(esbuild@0.25.3)(solid-js@1.9.5)
-      tsup: 8.4.0(typescript@5.8.3)
+      esbuild-plugin-solid: 0.5.0(esbuild@0.25.3)(solid-js@1.9.7)
+      tsup: 8.4.0(postcss@8.5.6)(typescript@5.8.3)
     transitivePeerDependencies:
       - esbuild
       - solid-js
       - supports-color
 
-  tsup@8.4.0(typescript@5.8.3):
+  tsup@8.4.0(postcss@8.5.6)(typescript@5.8.3):
     dependencies:
       bundle-require: 5.1.0(esbuild@0.25.3)
       cac: 6.7.14
@@ -6023,7 +6236,7 @@ snapshots:
       esbuild: 0.25.3
       joycon: 3.1.1
       picocolors: 1.1.1
-      postcss-load-config: 6.0.1
+      postcss-load-config: 6.0.1(postcss@8.5.6)
       resolve-from: 5.0.0
       rollup: 4.40.0
       source-map: 0.8.0-beta.0
@@ -6032,6 +6245,7 @@ snapshots:
       tinyglobby: 0.2.13
       tree-kill: 1.2.2
     optionalDependencies:
+      postcss: 8.5.6
       typescript: 5.8.3
     transitivePeerDependencies:
       - jiti
@@ -6090,6 +6304,67 @@ snapshots:
       convert-source-map: 2.0.0
 
   validate-html-nesting@1.2.2: {}
+
+  vike-solid@0.7.11(solid-js@1.9.7)(vike@0.4.236(vite@6.3.5(@types/node@20.17.31)))(vite@6.3.5(@types/node@20.17.31)):
+    dependencies:
+      isbot-fast: 1.2.0
+      solid-js: 1.9.7
+      vike: 0.4.236(vite@6.3.5(@types/node@20.17.31))
+      vite: 6.3.5(@types/node@20.17.31)
+      vite-plugin-solid: 2.11.7(solid-js@1.9.7)(vite@6.3.5(@types/node@20.17.31))
+    transitivePeerDependencies:
+      - '@testing-library/jest-dom'
+      - supports-color
+
+  vike@0.4.236(vite@6.3.5(@types/node@20.17.31)):
+    dependencies:
+      '@brillout/import': 0.2.6
+      '@brillout/json-serializer': 0.5.16
+      '@brillout/picocolors': 1.0.28
+      '@brillout/require-shim': 0.1.2
+      '@brillout/vite-plugin-server-entry': 0.7.9
+      acorn: 8.14.1
+      cac: 6.7.14
+      es-module-lexer: 1.7.0
+      esbuild: 0.25.3
+      json5: 2.2.3
+      magic-string: 0.30.17
+      picomatch: 4.0.2
+      semver: 7.7.1
+      sirv: 3.0.1
+      source-map-support: 0.5.13
+      tinyglobby: 0.2.13
+    optionalDependencies:
+      vite: 6.3.5(@types/node@20.17.31)
+
+  vite-plugin-solid@2.11.7(solid-js@1.9.7)(vite@6.3.5(@types/node@20.17.31)):
+    dependencies:
+      '@babel/core': 7.26.10
+      '@types/babel__core': 7.20.5
+      babel-preset-solid: 1.9.5(@babel/core@7.26.10)
+      merge-anything: 5.1.7
+      solid-js: 1.9.7
+      solid-refresh: 0.6.3(solid-js@1.9.7)
+      vite: 6.3.5(@types/node@20.17.31)
+      vitefu: 1.1.1(vite@6.3.5(@types/node@20.17.31))
+    transitivePeerDependencies:
+      - supports-color
+
+  vite@6.3.5(@types/node@20.17.31):
+    dependencies:
+      esbuild: 0.25.3
+      fdir: 6.4.4(picomatch@4.0.2)
+      picomatch: 4.0.2
+      postcss: 8.5.6
+      rollup: 4.40.0
+      tinyglobby: 0.2.13
+    optionalDependencies:
+      '@types/node': 20.17.31
+      fsevents: 2.3.3
+
+  vitefu@1.1.1(vite@6.3.5(@types/node@20.17.31)):
+    optionalDependencies:
+      vite: 6.3.5(@types/node@20.17.31)
 
   w3c-xmlserializer@4.0.0:
     dependencies:

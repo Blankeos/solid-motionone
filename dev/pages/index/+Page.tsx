@@ -1,0 +1,214 @@
+import {createSignal, For} from "solid-js"
+import type {JSX} from "solid-js/h/jsx-runtime"
+import {Motion, Presence} from "../../../src"
+
+export default function Page(): JSX.Element {
+	const [isOn, setIsOn] = createSignal(false)
+
+	return (
+		<>
+			<div
+				style={{
+					display: "flex",
+					height: "100vh",
+					"flex-direction": "column",
+					"align-items": "center",
+					"justify-content": "center",
+					gap: "50px",
+				}}
+			>
+				<h1>Motion One + Solid Demo</h1>
+				<Motion.div
+					animate={{opacity: [0, 1]}}
+					transition={{duration: 1, easing: "ease-in-out"}}
+				>
+					Fade in animation
+				</Motion.div>
+
+				<Motion.button
+					animate={{rotate: 90, backgroundColor: "yellow"}}
+					transition={{duration: 1}}
+				>
+					Rotate and color change
+				</Motion.button>
+
+				<Presence>
+					<Motion.div
+						initial={{opacity: 0, scale: 0.6}}
+						animate={{opacity: 1, scale: 1}}
+						exit={{opacity: 0, scale: 0.6}}
+						transition={{duration: 0.3}}
+					>
+						Presence animation
+					</Motion.div>
+				</Presence>
+
+				<Motion.div hover={{scale: 1.2}} press={{scale: 0.9}}>
+					Hover and press effects
+				</Motion.div>
+
+				<Motion.button
+					style={{
+						"border-radius": "9999px",
+						"background-color": "#9ca3af",
+						padding: "0.5rem",
+						transition: "background-color 0.3s ease",
+						border: "none",
+						cursor: "pointer",
+						width: "50px",
+						display: "flex",
+					}}
+					animate={{justifyContent: isOn() ? "flex-start" : "flex-end"}}
+					onClick={() => setIsOn(!isOn())}
+				>
+					<Motion.div
+						style={{
+							background: "blue",
+							height: "20px",
+							width: "20px",
+							"border-radius": "9999px",
+						}}
+						transition={{duration: 0.5}}
+					></Motion.div>
+				</Motion.button>
+
+				<SharedLayoutExample />
+			</div>
+		</>
+	)
+}
+
+{
+	/* Shared Layout Animation from Prompt */
+}
+const allIngredients = [
+	{icon: "🍅", label: "Tomato"},
+	{icon: "🥬", label: "Lettuce"},
+	{icon: "🧀", label: "Cheese"},
+	{icon: "🥕", label: "Carrot"},
+	{icon: "🍌", label: "Banana"},
+	{icon: "🫐", label: "Blueberries"},
+	{icon: "🥂", label: "Champers?"},
+]
+
+function SharedLayoutExample() {
+	const [tomato, lettuce, cheese] = allIngredients
+	const tabs = [tomato, lettuce, cheese]
+
+	const [selectedTab, setSelectedTab] = createSignal(tabs[0])
+
+	return (
+		<div
+			style={{
+				width: "480px",
+				height: "60vh",
+				"max-height": "360px",
+				"border-radius": "10px",
+				background: "white",
+				boxShadow:
+					"0 1px 1px hsl(0deg 0% 0% / 0.075), 0 2px 2px hsl(0deg 0% 0% / 0.075), 0 4px 4px hsl(0deg 0% 0% / 0.075), 0 8px 8px hsl(0deg 0% 0% / 0.075), 0 16px 16px hsl(0deg 0% 0% / 0.075), 0 2px 2px hsl(0deg 0% 0% / 0.075), 0 4px 4px hsl(0deg 0% 0% / 0.075), 0 8px 8px hsl(0deg 0% 0% / 0.075), 0 16px 16px hsl(0deg 0% 0% / 0.075)",
+				display: "flex",
+				flexDirection: "column",
+			}}
+		>
+			<nav
+				style={{
+					background: "#fdfdfd",
+					padding: "5px 5px 0",
+					"border-radius": "10px",
+					"border-bottom-left-radius": "0",
+					"border-bottom-right-radius": "0",
+					"border-bottom": "1px solid #eeeeee",
+					height: "44px",
+				}}
+			>
+				<ul
+					style={{
+						"list-style": "none",
+						padding: "0",
+						margin: "0",
+						"font-weight": "500",
+						"font-size": "14px",
+						display: "flex",
+						width: "100%",
+					}}
+				>
+					{tabs.map(item => (
+						<Motion.li
+							key={item.label}
+							initial={false}
+							animate={{
+								backgroundColor: item === selectedTab() ? "#eee" : "#eee0",
+							}}
+							style={{
+								"list-style": "none",
+								margin: "0",
+								"font-weight": "500",
+								"font-size": "14px",
+								"border-radius": "5px",
+								"border-bottom-left-radius": "0",
+								"border-bottom-right-radius": "0",
+								width: "100%",
+								padding: "10px 15px",
+								position: "relative",
+								background: "white",
+								cursor: "pointer",
+								height: "24px",
+								display: "flex",
+								"justify-content": "space-between",
+								"align-items": "center",
+								flex: "1",
+								"min-width": "0",
+								"user-select": "none",
+								color: "#0f1115",
+							}}
+							onClick={() => setSelectedTab(item)}
+						>
+							{`${item.icon} ${item.label}`}
+							{item === selectedTab() ? (
+								<Motion.div
+									style={{
+										position: "absolute",
+										bottom: "-2px",
+										left: "0",
+										right: "0",
+										height: "2px",
+										background: "rgb(0, 191, 255)", // Using a common light blue for the underline
+									}}
+									layoutId="item" // Motion One's equivalent to Framer Motion's layoutId for shared layout transitions
+								/>
+							) : null}
+						</Motion.li>
+					))}
+				</ul>
+			</nav>
+			<main
+				style={{
+					display: "flex",
+					"justify-content": "center",
+					"align-items": "center",
+					flex: "1",
+				}}
+			>
+				<Presence exitBeforeEnter>
+					{/* Because in Solid, there is no concept of 'keys' (the React implementation uses a key). The only way to say re-render is with this. */}
+					<For each={[selectedTab()]}>
+						{tab => (
+							<Motion.div
+								initial={{y: "10px", opacity: 0}}
+								animate={{y: "0px", opacity: 1}}
+								exit={{y: "-10px", opacity: 0}}
+								transition={{duration: 0.2}}
+								style={{
+									"font-size": "128px",
+								}}
+							>
+								{selectedTab().icon}
+							</Motion.div>
+						)}
+					</For>
+				</Presence>
+			</main>
+		</div>
+	)
+}

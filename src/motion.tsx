@@ -1,11 +1,11 @@
-import {Dynamic} from "solid-js/web"
-import {useContext, splitProps, JSX, createContext} from "solid-js"
-import {combineStyle} from "@solid-primitives/props"
 import {MotionState} from "@motionone/dom"
+import {combineStyle} from "@solid-primitives/props"
+import {JSX, createContext, splitProps, useContext} from "solid-js"
+import {Dynamic} from "solid-js/web"
 
-import type {MotionComponentProps, MotionProxy, MotionProxyComponent} from "./types.js"
-import {createAndBindMotionState} from "./primitives.js"
 import {PresenceContext} from "./presence.jsx"
+import {createAndBindMotionState} from "./primitives.js"
+import type {MotionComponentProps, MotionProxy, MotionProxyComponent} from "./types.js"
 
 const OPTION_KEYS = [
 	"initial",
@@ -19,7 +19,7 @@ const OPTION_KEYS = [
 	"exit",
 ] as const
 
-const ATTR_KEYS = ["tag"] as const
+const ATTR_KEYS = ["tag", "layout"] as const
 
 export const ParentContext = createContext<MotionState>()
 
@@ -29,6 +29,7 @@ export const MotionComponent = (
 		tag?: string
 		ref?: any
 		style?: JSX.CSSProperties | string
+		layout: boolean
 	},
 ): JSX.Element => {
 	const [options, , attrs] = splitProps(props, OPTION_KEYS, ATTR_KEYS)
