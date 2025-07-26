@@ -30,7 +30,6 @@ export const MotionComponent = (
 		tag?: string
 		ref?: any
 		style?: JSX.CSSProperties | string
-		layout: boolean
 	},
 ): JSX.Element => {
 	const [options, , attrs] = splitProps(props, OPTION_KEYS, ATTR_KEYS)

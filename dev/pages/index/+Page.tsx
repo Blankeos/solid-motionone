@@ -1,12 +1,12 @@
 import {createSignal, For, onCleanup, onMount, Show} from "solid-js"
 import type {JSX} from "solid-js/h/jsx-runtime"
 import {Motion, Presence} from "../../../src"
-import {useLayoutStore} from "../../../src/layout"
+import {rootlessLayoutStore} from "../../../src/layout"
 
 export default function Page(): JSX.Element {
 	const [isOn, setIsOn] = createSignal(false)
 
-	const layoutStore = useLayoutStore()
+	const {layoutStore} = rootlessLayoutStore
 
 	return (
 		<>
@@ -47,7 +47,7 @@ export default function Page(): JSX.Element {
 				</Presence>
 
 				<Motion.div hover={{scale: 1.2}} press={{scale: 0.9}}>
-					Hover and press effects {layoutStore().count}
+					Hover and press effects {layoutStore.count}
 				</Motion.div>
 
 				<SwitchLayoutExample />
@@ -72,7 +72,7 @@ function SwitchLayoutExample() {
 				transition: "background-color 0.3s ease",
 				border: "none",
 				cursor: "pointer",
-				width: "50px",
+				width: "90px",
 				display: "flex",
 				"justify-content": isOn() ? "flex-start" : "flex-end",
 			}}
@@ -134,6 +134,7 @@ function SharedLayoutExample() {
 					"border-bottom-right-radius": "0",
 					"border-bottom": "1px solid #eeeeee",
 					height: "44px",
+					overflow: "hidden",
 				}}
 			>
 				<ul
@@ -149,11 +150,7 @@ function SharedLayoutExample() {
 				>
 					<For each={tabs}>
 						{item => (
-							<Motion.li
-								initial={false}
-								animate={{
-									backgroundColor: item === selectedTab() ? "#eee" : "#eee0",
-								}}
+							<li
 								style={{
 									"list-style": "none",
 									margin: "0",
@@ -169,8 +166,6 @@ function SharedLayoutExample() {
 									cursor: "pointer",
 									height: "24px",
 									display: "flex",
-									"justify-content": "space-between",
-									"align-items": "center",
 									flex: "1",
 									"min-width": "0",
 									"user-select": "none",
@@ -183,17 +178,18 @@ function SharedLayoutExample() {
 									<Motion.div
 										style={{
 											position: "absolute",
-											bottom: "-2px",
+											bottom: "0px",
 											left: "0",
 											right: "0",
-											height: "2px",
-											background: "rgb(0, 191, 255)", // Using a common light blue for the underline
+											height: "5px",
+											"z-index": 50,
+											background: "yellow",
 										}}
 										layoutId="underline" // Motion One's equivalent to Framer Motion's layoutId for shared layout transitions
 										transition={{duration: 0.3}}
 									/>
 								</Show>
-							</Motion.li>
+							</li>
 						)}
 					</For>
 				</ul>
@@ -207,7 +203,6 @@ function SharedLayoutExample() {
 				}}
 			>
 				<Presence exitBeforeEnter>
-					{/* Because in Solid, there is no concept of 'keys' (the React implementation uses a key). The only way to say re-render is with this. */}
 					<For each={[selectedTab()]}>
 						{tab => (
 							<Motion.div
@@ -238,7 +233,7 @@ function ReorderExample() {
 		const currentOrder = order() // Access the signal to make it a dependency
 		const timeout = setInterval(() => {
 			setOrder(shuffle(currentOrder))
-		}, 1000)
+		}, 500)
 
 		// onCleanup is Solid's equivalent of useEffect's return cleanup function.
 		// It runs before the effect re-runs, and when the component is unmounted.
@@ -266,12 +261,11 @@ function ReorderExample() {
 			<For each={order()}>
 				{(backgroundColor, index) => (
 					<Motion.li
-						// layout // FIXME
-						transition={{
-							type: "spring", // FIXME, not existing because motion one dom (old)
-							damping: 20,
-							stiffness: 300,
-						}}
+						// transition={{
+						// 	type: "spring", // FIXME, not existing because motion one dom (old)
+						// 	damping: 20,
+						// 	stiffness: 300,
+						// }}
 						style={{
 							width: "100px",
 							height: "100px",

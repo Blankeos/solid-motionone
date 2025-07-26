@@ -1,17 +1,14 @@
 import {type FlowProps} from "solid-js"
 import type {JSX} from "solid-js/h/jsx-runtime"
-
-import {useLayoutStore} from "../../src/layout"
+import {rootlessLayoutStore} from "../../src/layout"
 
 export default function RootLayout(props: FlowProps): JSX.Element {
-	const layoutStore = useLayoutStore()
+	const {layoutStore, increment} = rootlessLayoutStore
 
 	return (
 		<>
 			{props.children}
-			<button onClick={layoutStore().increment}>
-				increase {JSON.stringify(layoutStore().count)}
-			</button>
+			<button onClick={increment}>increase {JSON.stringify(layoutStore.count)}</button>
 		</>
 	)
 }
