@@ -34,7 +34,7 @@ declare module "@motionone/dom" {
 }
 
 export type MotionComponentProps = ParentProps<MotionEventHandlers & motionone.Options> & {
-	layout?: boolean | string
+	layout?: true | string
 	layoutId?: string
 }
 

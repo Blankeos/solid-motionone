@@ -1,3 +1,4 @@
+import {onCleanup, onMount} from "solid-js"
 import {createGlobalStore} from "./_global-store.js"
 
 type SourceData = {
@@ -92,5 +93,181 @@ export function copyTransformFromRect(source: SourceData, target: HTMLElement) {
 		scaleX,
 		scaleY,
 		borderRadius: source.borderRadius,
+	}
+}
+
+export function createAndBindLayoutState(
+	el: () => HTMLElement | null,
+	options: {layout?: true | string; layoutId?: string; motionState: MotionState},
+) {
+	const layoutStore = useLayoutStore()
+
+	// Handle for Single Lifecycle Layout. (Detect with mutationObserver)
+	// onMount(() => {
+	// 	if (!options.layout) return
+	// 	const mutationObserver = new MutationObserver(mutations => {
+	// 		mutations.forEach(mutation => {
+	// 			if (mutation.type === "attributes" && mutation.attributeName === "style") {
+	// 				const target = mutation.target
+	// 				const justifyItems = getComputedStyle(target as Element).justifyItems
+	// 				console.log("Parent justifyItems changed to:", justifyItems)
+	// 			}
+	// 		})
+	// 	})
+
+	// 	if (el().parentElement)
+	// 		mutationObserver.observe(el().parentElement!, {
+	// 			attributes: true,
+	// 			attributeFilter: ["style", "class"], // Watch style and class changes
+	// 		})
+
+	// 	onCleanup(() => {
+	// 		console.log("[Single lifecycle layout] Cleaning up..")
+	// 		mutationObserver.disconnect()
+	// 	})
+	// })
+
+	// Handle for Shared Layout (Detect with simply mount and unmount)
+	onMount(() => {
+		const ref = el()
+		const layoutId = options.layoutId
+		if (!ref || !layoutId) return
+
+		requestAnimationFrame(() => {
+			const sourceData = layoutStore().sourceDataByLayoutId.get(layoutId)
+			if (!sourceData) return
+
+			const transform = copyTransformFromRect(
+				{
+					borderRadius: sourceData.borderRadius,
+					domRect: sourceData.domRect,
+				},
+				el()!,
+			)
+
+			const target = {
+				borderRadius: getComputedStyle(el()!).borderRadius,
+			}
+
+			options.motionState.update({
+				...options.motionState.getOptions(),
+				initial: {
+					scaleX: transform.scaleX,
+					scaleY: transform.scaleY,
+					x: transform.translateX,
+					y: transform.translateY,
+					borderRadius: sourceData.borderRadius,
+				},
+				animate: {
+					scaleX: [transform.scaleX],
+					scaleY: [transform.scaleY],
+					x: [transform.translateX, 0],
+					y: [transform.translateY, 0],
+					borderRadius: [sourceData.borderRadius, target.borderRadius],
+				},
+			})
+		})
+
+		onCleanup(() => {
+			// Exit animation logic here
+			const borderRadius = getComputedStyle(ref).borderRadius
+			const domRect = ref.getBoundingClientRect()
+
+			// Set to global store.
+			layoutStore().setSourceData(layoutId, {
+				borderRadius: borderRadius,
+				domRect: domRect,
+			})
+		})
+	})
+	// onCleanup(() => {
+	// 	const ref = el()
+	// 	const layoutId = options.layoutId
+	// 	if (!ref || !layoutId) return
+
+	// 	const borderRadius = getComputedStyle(ref).borderRadius
+	// 	const domRect = ref.getBoundingClientRect()
+
+	// 	// Set to global store.
+	// 	layoutStore().setSourceData(layoutId, {
+	// 		borderRadius: borderRadius,
+	// 		domRect: ref.getBoundingClientRect(),
+	// 	})
+	// 	console.log("[Shared Layout] Cleaning up...", ref)
+	// })
+
+	// createEffect(() => {
+	// 	console.log("something changed!?")
+	// 	requestAnimationFrame(() => {
+	// 		console.log("something changed!!")
+	// 		// Animate based on rect
+	// 	})
+	// })
+
+	// createEffect(() => {
+	// 	if (!props.layoutId) return
+	// 	// console.log("2createEffect: layoutId changed.", props.layoutId)
+	// })
+}
+
+function createDestructionWatcher() {
+	let isDestroyed = false
+	const observers = []
+	const callbacks = []
+
+	return {
+		watch(element, callback) {
+			if (isDestroyed) return
+
+			callbacks.push(callback)
+
+			function handleDestruction() {
+				if (isDestroyed) return
+				isDestroyed = true
+				callbacks.forEach(cb => cb())
+				observers.forEach(obs => obs.disconnect())
+			}
+
+			// Watch all ancestors
+			let current = element
+			while (current && current !== document.body) {
+				if (current.parentNode) {
+					const observer = new MutationObserver(mutations => {
+						mutations.forEach(mutation => {
+							if (mutation.type === "childList") {
+								mutation.removedNodes.forEach(node => {
+									if (
+										node === element ||
+										(node.contains && node.contains(element))
+									) {
+										handleDestruction()
+									}
+								})
+							}
+						})
+					})
+
+					observer.observe(current.parentNode, {childList: true})
+					observers.push(observer)
+				}
+				current = current.parentNode
+			}
+
+			// Fallback check
+			function check() {
+				if (isDestroyed) return
+				if (!document.contains(element)) {
+					handleDestruction()
+					return
+				}
+				requestAnimationFrame(check)
+			}
+			requestAnimationFrame(check)
+		},
+
+		destroy() {
+			isDestroyed = true
+			observers.forEach(obs => obs.disconnect())
+		},
 	}
 }

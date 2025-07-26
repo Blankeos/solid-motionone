@@ -3,6 +3,7 @@ import {combineStyle} from "@solid-primitives/props"
 import {JSX, createContext, splitProps, useContext} from "solid-js"
 import {Dynamic} from "solid-js/web"
 
+import {createAndBindLayoutState} from "./layout.js"
 import {PresenceContext} from "./presence.jsx"
 import {createAndBindMotionState} from "./primitives.js"
 import type {MotionComponentProps, MotionProxy, MotionProxyComponent} from "./types.js"
@@ -40,6 +41,12 @@ export const MotionComponent = (
 		useContext(PresenceContext),
 		useContext(ParentContext),
 	)
+
+	createAndBindLayoutState(() => root as HTMLElement, {
+		layout: props.layout,
+		layoutId: props.layoutId,
+		motionState: state,
+	})
 
 	let root!: Element
 	return (

@@ -1,4 +1,4 @@
-import {createSignal, For, onCleanup, onMount} from "solid-js"
+import {createSignal, For, onCleanup, onMount, Show} from "solid-js"
 import type {JSX} from "solid-js/h/jsx-runtime"
 import {Motion, Presence} from "../../../src"
 import {useLayoutStore} from "../../../src/layout"
@@ -50,30 +50,7 @@ export default function Page(): JSX.Element {
 					Hover and press effects {layoutStore().count}
 				</Motion.div>
 
-				<Motion.button
-					style={{
-						"border-radius": "9999px",
-						"background-color": "#9ca3af",
-						padding: "0.5rem",
-						transition: "background-color 0.3s ease",
-						border: "none",
-						cursor: "pointer",
-						width: "50px",
-						display: "flex",
-					}}
-					animate={{justifyContent: isOn() ? "flex-start" : "flex-end"}}
-					onClick={() => setIsOn(!isOn())}
-				>
-					<Motion.div
-						style={{
-							background: "blue",
-							height: "20px",
-							width: "20px",
-							"border-radius": "9999px",
-						}}
-						transition={{duration: 0.5}}
-					></Motion.div>
-				</Motion.button>
+				<SwitchLayoutExample />
 
 				<SharedLayoutExample />
 
@@ -83,9 +60,41 @@ export default function Page(): JSX.Element {
 	)
 }
 
-{
-	/* Shared Layout Animation from Prompt */
+function SwitchLayoutExample() {
+	const [isOn, setIsOn] = createSignal(false)
+
+	return (
+		<Motion.button
+			style={{
+				"border-radius": "9999px",
+				"background-color": "#9ca3af",
+				padding: "0.5rem",
+				transition: "background-color 0.3s ease",
+				border: "none",
+				cursor: "pointer",
+				width: "50px",
+				display: "flex",
+				"justify-content": isOn() ? "flex-start" : "flex-end",
+			}}
+			onClick={() => setIsOn(!isOn())}
+		>
+			<Motion.div
+				data-switch-circle="true"
+				layout
+				style={{
+					background: "blue",
+					height: "20px",
+					width: "20px",
+					"border-radius": "9999px",
+				}}
+				transition={{duration: 0.5}}
+			></Motion.div>
+		</Motion.button>
+	)
 }
+
+// ----
+
 const allIngredients = [
 	{icon: "🍅", label: "Tomato"},
 	{icon: "🥬", label: "Lettuce"},
@@ -110,10 +119,10 @@ function SharedLayoutExample() {
 				"max-height": "360px",
 				"border-radius": "10px",
 				background: "white",
-				boxShadow:
+				"box-shadow":
 					"0 1px 1px hsl(0deg 0% 0% / 0.075), 0 2px 2px hsl(0deg 0% 0% / 0.075), 0 4px 4px hsl(0deg 0% 0% / 0.075), 0 8px 8px hsl(0deg 0% 0% / 0.075), 0 16px 16px hsl(0deg 0% 0% / 0.075), 0 2px 2px hsl(0deg 0% 0% / 0.075), 0 4px 4px hsl(0deg 0% 0% / 0.075), 0 8px 8px hsl(0deg 0% 0% / 0.075), 0 16px 16px hsl(0deg 0% 0% / 0.075)",
 				display: "flex",
-				flexDirection: "column",
+				"flex-direction": "column",
 			}}
 		>
 			<nav
@@ -138,53 +147,55 @@ function SharedLayoutExample() {
 						width: "100%",
 					}}
 				>
-					{tabs.map(item => (
-						<Motion.li
-							key={item.label}
-							initial={false}
-							animate={{
-								backgroundColor: item === selectedTab() ? "#eee" : "#eee0",
-							}}
-							style={{
-								"list-style": "none",
-								margin: "0",
-								"font-weight": "500",
-								"font-size": "14px",
-								"border-radius": "5px",
-								"border-bottom-left-radius": "0",
-								"border-bottom-right-radius": "0",
-								width: "100%",
-								padding: "10px 15px",
-								position: "relative",
-								background: "white",
-								cursor: "pointer",
-								height: "24px",
-								display: "flex",
-								"justify-content": "space-between",
-								"align-items": "center",
-								flex: "1",
-								"min-width": "0",
-								"user-select": "none",
-								color: "#0f1115",
-							}}
-							onClick={() => setSelectedTab(item)}
-						>
-							{`${item.icon} ${item.label}`}
-							{item === selectedTab() ? (
-								<Motion.div
-									style={{
-										position: "absolute",
-										bottom: "-2px",
-										left: "0",
-										right: "0",
-										height: "2px",
-										background: "rgb(0, 191, 255)", // Using a common light blue for the underline
-									}}
-									layoutId="item" // Motion One's equivalent to Framer Motion's layoutId for shared layout transitions
-								/>
-							) : null}
-						</Motion.li>
-					))}
+					<For each={tabs}>
+						{item => (
+							<Motion.li
+								initial={false}
+								animate={{
+									backgroundColor: item === selectedTab() ? "#eee" : "#eee0",
+								}}
+								style={{
+									"list-style": "none",
+									margin: "0",
+									"font-weight": "500",
+									"font-size": "14px",
+									"border-radius": "5px",
+									"border-bottom-left-radius": "0",
+									"border-bottom-right-radius": "0",
+									width: "100%",
+									padding: "10px 15px",
+									position: "relative",
+									background: "white",
+									cursor: "pointer",
+									height: "24px",
+									display: "flex",
+									"justify-content": "space-between",
+									"align-items": "center",
+									flex: "1",
+									"min-width": "0",
+									"user-select": "none",
+									color: "#0f1115",
+								}}
+								onClick={() => setSelectedTab(item)}
+							>
+								{`${item.icon} ${item.label}`}
+								<Show when={item === selectedTab()}>
+									<Motion.div
+										style={{
+											position: "absolute",
+											bottom: "-2px",
+											left: "0",
+											right: "0",
+											height: "2px",
+											background: "rgb(0, 191, 255)", // Using a common light blue for the underline
+										}}
+										layoutId="underline" // Motion One's equivalent to Framer Motion's layoutId for shared layout transitions
+										transition={{duration: 0.3}}
+									/>
+								</Show>
+							</Motion.li>
+						)}
+					</For>
 				</ul>
 			</nav>
 			<main
@@ -253,9 +264,9 @@ function ReorderExample() {
 			{/* Solid's For loop is used for rendering lists. */}
 			{/* Motion One's layout prop handles shared layout animations. */}
 			<For each={order()}>
-				{backgroundColor => (
+				{(backgroundColor, index) => (
 					<Motion.li
-						layout
+						// layout // FIXME
 						transition={{
 							type: "spring", // FIXME, not existing because motion one dom (old)
 							damping: 20,
