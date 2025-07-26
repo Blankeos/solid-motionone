@@ -1,9 +1,12 @@
-import {createSignal, For} from "solid-js"
+import {createSignal, For, onCleanup, onMount} from "solid-js"
 import type {JSX} from "solid-js/h/jsx-runtime"
 import {Motion, Presence} from "../../../src"
+import {useLayoutStore} from "../../../src/layout"
 
 export default function Page(): JSX.Element {
 	const [isOn, setIsOn] = createSignal(false)
+
+	const layoutStore = useLayoutStore()
 
 	return (
 		<>
@@ -44,7 +47,7 @@ export default function Page(): JSX.Element {
 				</Presence>
 
 				<Motion.div hover={{scale: 1.2}} press={{scale: 0.9}}>
-					Hover and press effects
+					Hover and press effects {layoutStore().count}
 				</Motion.div>
 
 				<Motion.button
@@ -73,6 +76,8 @@ export default function Page(): JSX.Element {
 				</Motion.button>
 
 				<SharedLayoutExample />
+
+				<ReorderExample />
 			</div>
 		</>
 	)
@@ -211,4 +216,69 @@ function SharedLayoutExample() {
 			</main>
 		</div>
 	)
+}
+
+function ReorderExample() {
+	const [order, setOrder] = createSignal(initialOrder)
+
+	// In Solid, createEffect will re-run when its dependencies (signals accessed within it) change.
+	// This mimics the behavior of React's useEffect with a dependency array.
+	onMount(() => {
+		const currentOrder = order() // Access the signal to make it a dependency
+		const timeout = setInterval(() => {
+			setOrder(shuffle(currentOrder))
+		}, 1000)
+
+		// onCleanup is Solid's equivalent of useEffect's return cleanup function.
+		// It runs before the effect re-runs, and when the component is unmounted.
+		onCleanup(() => clearTimeout(timeout))
+	})
+
+	return (
+		<ul
+			style={{
+				"list-style": "none",
+				padding: "0",
+				margin: "0",
+				position: "relative",
+				display: "flex",
+				"flex-wrap": "wrap",
+				gap: "10px",
+				width: "300px",
+				"flex-direction": "row",
+				"justify-content": "center",
+				"align-items": "center",
+			}}
+		>
+			{/* Solid's For loop is used for rendering lists. */}
+			{/* Motion One's layout prop handles shared layout animations. */}
+			<For each={order()}>
+				{backgroundColor => (
+					<Motion.li
+						layout
+						transition={{
+							type: "spring", // FIXME, not existing because motion one dom (old)
+							damping: 20,
+							stiffness: 300,
+						}}
+						style={{
+							width: "100px",
+							height: "100px",
+							"border-radius": "10px",
+							"background-color": backgroundColor,
+						}}
+					/>
+				)}
+			</For>
+		</ul>
+	)
+}
+
+const initialOrder = ["#ff0088", "#dd00ee", "#9911ff", "#0d63f8"]
+
+/**
+ * ==============   Utils   ================
+ */
+function shuffle([...array]: string[]) {
+	return array.sort(() => Math.random() - 0.5)
 }
