@@ -147,6 +147,7 @@ export default function MotionComp(
 				createAndBindLayoutState(() => root as HTMLElement, {
 					layout: props.layout,
 					layoutId: layoutId(),
+					transition: props.transition,
 				})
 				return (
 					<ParentContext.Provider value={1 as any}>

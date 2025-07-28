@@ -1,4 +1,4 @@
-import {animate} from "motion"
+import {animate, AnimationOptions} from "motion"
 import {createRoot, createSignal, onCleanup, onMount} from "solid-js"
 import {createStore, produce} from "solid-js/store"
 
@@ -128,6 +128,7 @@ export function createAndBindLayoutState(
 		layout?: true
 		layoutId?: string
 		key?: string | number
+		transition?: AnimationOptions
 	},
 ) {
 	const {layoutStore, setSourceData} = rootlessLayoutStore
@@ -151,13 +152,17 @@ export function createAndBindLayoutState(
 			borderRadius: getComputedStyle(el()!).borderRadius,
 		}
 
-		animate(ref, {
-			scaleX: [transform.scaleX],
-			scaleY: [transform.scaleY],
-			x: [transform.translateX, 0],
-			y: [transform.translateY, 0],
-			borderRadius: [sourceData.borderRadius, target.borderRadius],
-		})
+		animate(
+			ref,
+			{
+				scaleX: [transform.scaleX],
+				scaleY: [transform.scaleY],
+				x: [transform.translateX, 0],
+				y: [transform.translateY, 0],
+				borderRadius: [sourceData.borderRadius, target.borderRadius],
+			},
+			{...options.transition},
+		)
 	})
 	onCleanup(() => {
 		const ref = el()
