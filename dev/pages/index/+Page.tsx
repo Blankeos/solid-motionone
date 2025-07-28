@@ -2,6 +2,7 @@ import {createSignal, For, onCleanup, onMount, Show} from "solid-js"
 import type {JSX} from "solid-js/h/jsx-runtime"
 import {Motion, Presence} from "../../../src"
 import {rootlessLayoutStore} from "../../../src/layout"
+import {motion} from "../../../src/motion-new"
 
 export default function Page(): JSX.Element {
 	const [isOn, setIsOn] = createSignal(false)
@@ -13,7 +14,7 @@ export default function Page(): JSX.Element {
 			<div
 				style={{
 					display: "flex",
-					height: "100vh",
+					"min-height": "100vh",
 					"flex-direction": "column",
 					"align-items": "center",
 					"justify-content": "center",
@@ -21,40 +22,47 @@ export default function Page(): JSX.Element {
 				}}
 			>
 				<h1>Motion One + Solid Demo</h1>
-				<Motion.div
+				<motion.div
 					animate={{opacity: [0, 1]}}
-					transition={{duration: 1, easing: "ease-in-out"}}
+					transition={{duration: 1, ease: "easeInOut"}}
 				>
 					Fade in animation
-				</Motion.div>
+				</motion.div>
 
-				<Motion.button
+				<motion.button
 					animate={{rotate: 90, backgroundColor: "yellow"}}
-					transition={{duration: 1}}
+					whileHover={{
+						scale: 2,
+					}}
+					transition={{
+						duration: 3,
+					}}
 				>
 					Rotate and color change
-				</Motion.button>
+				</motion.button>
 
 				<Presence>
-					<Motion.div
+					<motion.div
 						initial={{opacity: 0, scale: 0.6}}
 						animate={{opacity: 1, scale: 1}}
 						exit={{opacity: 0, scale: 0.6}}
 						transition={{duration: 0.3}}
 					>
 						Presence animation
-					</Motion.div>
+					</motion.div>
 				</Presence>
 
-				<Motion.div hover={{scale: 1.2}} press={{scale: 0.9}}>
+				<motion.div whileHover={{scale: 1.2}} whilePress={{scale: 0.9}}>
 					Hover and press effects {layoutStore.count}
-				</Motion.div>
+				</motion.div>
 
 				<SwitchLayoutExample />
 
 				<SharedLayoutExample />
 
 				<ReorderExample />
+
+				<StyleCorrectionExample />
 			</div>
 		</>
 	)
@@ -64,7 +72,7 @@ function SwitchLayoutExample() {
 	const [isOn, setIsOn] = createSignal(false)
 
 	return (
-		<Motion.button
+		<button
 			style={{
 				"border-radius": "9999px",
 				"background-color": "#9ca3af",
@@ -78,7 +86,7 @@ function SwitchLayoutExample() {
 			}}
 			onClick={() => setIsOn(!isOn())}
 		>
-			<Motion.div
+			<motion.div
 				data-switch-circle="true"
 				layout
 				style={{
@@ -87,9 +95,9 @@ function SwitchLayoutExample() {
 					width: "20px",
 					"border-radius": "9999px",
 				}}
-				transition={{duration: 0.5}}
-			></Motion.div>
-		</Motion.button>
+				transition={{duration: 5}}
+			></motion.div>
+		</button>
 	)
 }
 
@@ -175,7 +183,7 @@ function SharedLayoutExample() {
 							>
 								{`${item.icon} ${item.label}`}
 								<Show when={item === selectedTab()}>
-									<Motion.div
+									<motion.div
 										style={{
 											position: "absolute",
 											bottom: "0px",
@@ -260,7 +268,8 @@ function ReorderExample() {
 			{/* Motion One's layout prop handles shared layout animations. */}
 			<For each={order()}>
 				{(backgroundColor, index) => (
-					<Motion.li
+					<motion.li
+						layout
 						// transition={{
 						// 	type: "spring", // FIXME, not existing because motion one dom (old)
 						// 	damping: 20,
@@ -286,4 +295,37 @@ const initialOrder = ["#ff0088", "#dd00ee", "#9911ff", "#0d63f8"]
  */
 function shuffle([...array]: string[]) {
 	return array.sort(() => Math.random() - 0.5)
+}
+
+// ----
+function StyleCorrectionExample() {
+	const [isOpen, setIsOpen] = createSignal(false)
+
+	return (
+		<motion.div
+			data-isOpen={isOpen()}
+			initial={{borderRadius: 50}}
+			animate={{
+				width: isOpen() ? "400px" : "100px",
+				height: isOpen() ? "200px" : "100px",
+				display: "flex",
+			}}
+			style={{
+				background: "gray",
+				"justify-content": "center",
+				"align-items": "center",
+			}}
+			onClick={() => setIsOpen(!isOpen())}
+		>
+			<motion.div
+				transition={{duration: 1}}
+				style={{
+					width: "40px",
+					height: "40px",
+					background: "#f107a3",
+					"border-radius": "50%",
+				}}
+			/>
+		</motion.div>
+	)
 }

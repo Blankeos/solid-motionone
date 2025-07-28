@@ -1,5 +1,5 @@
-import {MotionState} from "@motionone/dom"
-import {createRoot, onCleanup, onMount} from "solid-js"
+import {animate} from "motion"
+import {createRoot, createSignal, onCleanup, onMount} from "solid-js"
 import {createStore, produce} from "solid-js/store"
 
 type SourceData = {
@@ -32,6 +32,7 @@ function createRootlessLayoutStore() {
 				}
 			}),
 		)
+		// console.log("layoutStore", unwrap(layoutStore).sourceDataByLayoutId)
 	}
 
 	/** @deprecated for demonstration purposes only */
@@ -120,328 +121,17 @@ const captureElementState = (element: HTMLElement) => {
 	}
 }
 
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function createAndBindLayoutState(
 	el: () => HTMLElement | null,
 	options: {
-		layout?: true | string
+		layout?: true
 		layoutId?: string
-		motionState: MotionState
 		key?: string | number
 	},
 ) {
 	const {layoutStore, setSourceData} = rootlessLayoutStore
 
-	// Handle for Single Lifecycle Layout. (Detect with mutationObserver)
-	onMount(() => {
-		const ref = el()
-		const layout = options.layout
-		if (!ref || !layout) return
-
-		const parentElement = ref.parentElement
-		if (!parentElement) return
-
-		// 1. Intercept setAttribute for style attribute changes
-		const originalSetAttribute = parentElement.setAttribute.bind(parentElement)
-		parentElement.setAttribute = function (name, value) {
-			if (name === "style") {
-				const beforeState = captureElementState(ref)
-
-				const result = originalSetAttribute(name, value)
-
-				Promise.resolve().then(() => {
-					const afterState = captureElementState(ref)
-
-					const transform = copyTransformFromRect(
-						{
-							borderRadius: beforeState.borderRadius,
-							domRect: beforeState.domRect,
-						},
-						ref.getBoundingClientRect(),
-					)
-
-					console.log("hi1")
-					options.motionState.update({
-						...options.motionState.getOptions(),
-						animate: {
-							scaleX: [transform.scaleX],
-							scaleY: [transform.scaleY],
-							x: [transform.translateX, 0],
-							y: [transform.translateY, 0],
-							borderRadius: [beforeState.borderRadius, beforeState.borderRadius],
-						},
-					})
-				})
-
-				return result
-			}
-			return originalSetAttribute(name, value)
-		}
-
-		// 2. Intercept cssText changes
-		const originalCssTextDescriptor = Object.getOwnPropertyDescriptor(
-			CSSStyleDeclaration.prototype,
-			"cssText",
-		)
-		if (originalCssTextDescriptor) {
-			Object.defineProperty(parentElement.style, "cssText", {
-				get: originalCssTextDescriptor.get,
-				set: function (value) {
-					const beforeState = captureElementState(ref)
-
-					const result = originalCssTextDescriptor.set?.call(this, value)
-
-					Promise.resolve().then(() => {
-						const afterState = captureElementState(ref)
-
-						const transform = copyTransformFromRect(
-							{
-								borderRadius: beforeState.borderRadius,
-								domRect: beforeState.domRect,
-							},
-							ref.getBoundingClientRect(),
-						)
-
-						console.log("hi2")
-						options.motionState.update({
-							...options.motionState.getOptions(),
-							animate: {
-								scaleX: [transform.scaleX],
-								scaleY: [transform.scaleY],
-								x: [transform.translateX, 0],
-								y: [transform.translateY, 0],
-								borderRadius: [beforeState.borderRadius, beforeState.borderRadius],
-							},
-						})
-					})
-
-					return result
-				},
-				configurable: true,
-			})
-		}
-
-		// 3. Intercept setProperty method
-		const originalSetProperty = parentElement.style.setProperty.bind(parentElement.style)
-		let pendingAnimation = false
-		let beforeState: SourceData | null = null
-
-		parentElement.style.setProperty = function (property, value, priority) {
-			if (!pendingAnimation) {
-				beforeState = captureElementState(el()!)
-				pendingAnimation = true
-
-				// Schedule animation for next microtask
-				Promise.resolve().then(() => {
-					if (beforeState) {
-						originalSetProperty(property, value, priority)
-						const afterState = captureElementState(ref)
-						const transform = copyTransformFromRect(
-							{
-								borderRadius: beforeState.borderRadius,
-								domRect: beforeState.domRect,
-							},
-							afterState.domRect,
-						)
-
-						console.log("afterState", afterState.domRect.x, beforeState.domRect.x)
-						options.motionState.update({
-							...options.motionState.getOptions(),
-							animate: {
-								scaleX: [transform.scaleX],
-								scaleY: [transform.scaleY],
-								x: [transform.translateX, 0],
-								y: [transform.translateY, 0],
-								borderRadius: [beforeState.borderRadius, beforeState.borderRadius],
-							},
-						})
-
-						pendingAnimation = false
-						beforeState = null
-					}
-				})
-			}
-
-			return originalSetProperty(property, value, priority)
-		}
-		// options.motionState.update({
-		// 	...options.motionState.getOptions(),
-		// 	animate: {
-		// 		scaleX: [transform.scaleX],
-		// 		scaleY: [transform.scaleY],
-		// 		x: [transform.translateX, 0],
-		// 		y: [transform.translateY, 0],
-		// 		borderRadius: [beforeState.borderRadius, beforeState.borderRadius],
-		// 	},
-		// })
-
-		// 4. Intercept commonly changed layout properties
-		const layoutProperties = [
-			"display",
-			"position",
-			"top",
-			"left",
-			"right",
-			"bottom",
-			"width",
-			"height",
-			"margin",
-			"marginTop",
-			"marginRight",
-			"marginBottom",
-			"marginLeft",
-			"padding",
-			"paddingTop",
-			"paddingRight",
-			"paddingBottom",
-			"paddingLeft",
-			"justifyItems",
-			"alignItems",
-			"justifyContent",
-			"alignContent",
-			"gridTemplateColumns",
-			"gridTemplateRows",
-			"gap",
-			"rowGap",
-			"columnGap",
-			"flexDirection",
-			"flexWrap",
-			"flex",
-			"flexGrow",
-			"flexShrink",
-			"flexBasis",
-			"transform",
-			"transformOrigin",
-		]
-
-		const originalDescriptors = new Map()
-
-		layoutProperties.forEach(prop => {
-			const descriptor = Object.getOwnPropertyDescriptor(CSSStyleDeclaration.prototype, prop)
-			if (descriptor && descriptor.set) {
-				originalDescriptors.set(prop, descriptor)
-
-				Object.defineProperty(parentElement.style, prop, {
-					get: descriptor.get,
-					set: function (value) {
-						const beforeState = captureElementState(ref)
-
-						const result = descriptor.set.call(this, value)
-
-						Promise.resolve().then(() => {
-							const afterState = captureElementState(ref)
-
-							const transform = copyTransformFromRect(
-								{
-									borderRadius: beforeState.borderRadius,
-									domRect: beforeState.domRect,
-								},
-								ref.getBoundingClientRect(),
-							)
-
-							console.log("hi4")
-							options.motionState.update({
-								...options.motionState.getOptions(),
-								animate: {
-									scaleX: [transform.scaleX],
-									scaleY: [transform.scaleY],
-									x: [transform.translateX, 0],
-									y: [transform.translateY, 0],
-									borderRadius: [
-										beforeState.borderRadius,
-										beforeState.borderRadius,
-									],
-								},
-							})
-						})
-
-						return result
-					},
-					configurable: true,
-					enumerable: descriptor.enumerable,
-				})
-			}
-		})
-
-		onCleanup(() => {
-			console.log("[Single lifecycle layout] Cleaning up..")
-
-			// Restore setAttribute
-			parentElement.setAttribute = originalSetAttribute
-
-			// Restore cssText
-			if (originalCssTextDescriptor) {
-				Object.defineProperty(parentElement.style, "cssText", originalCssTextDescriptor)
-			}
-
-			// Restore setProperty
-			Object.defineProperty(parentElement.style, "setProperty", {
-				value: originalSetProperty,
-				configurable: true,
-			})
-
-			// Restore individual property descriptors
-			originalDescriptors.forEach((descriptor, prop) => {
-				Object.defineProperty(parentElement.style, prop, descriptor)
-			})
-		})
-	})
-	// onMount(() => {
-	// 	const ref = el()
-	// 	const layout = options.layout
-	// 	if (!ref || !layout) return
-	// 	const mutationObserver = new MutationObserver(mutations => {
-	// 		mutations.forEach(mutation => {
-	// 			if (mutation.type === "attributes" && mutation.attributeName === "style") {
-	// 				const target = mutation.target
-	// 				const justifyItems = getComputedStyle(target as Element).justifyItems
-	// 				console.log("Parent justifyItems changed to:", justifyItems)
-
-	// 				// Capture BEFORE state
-	// 				const sourceData = captureElementState(el()!)
-
-	// 				console.log("Source Data", sourceData.domRect.x)
-	// 				// Capture AFTER state
-	// 				requestAnimationFrame(() => {
-	// 					const transform = opyTransformFromRect(
-	// 						{
-	// 							borderRadius: sourceData.borderRadius,
-	// 							domRect: sourceData.domRect,
-	// 						},
-	// 						el()!,
-	// 					)
-
-	// 					const targetData = captureElementState(el()!)
-	// 					console.log("Target data", targetData.domRect.x)
-
-	// 					const target = {
-	// 						borderRadius: getComputedStyle(el()!).borderRadius,
-	// 					}
-
-	// 					// Update MotionOne state
-	// 					options.motionState.update({
-	// 						...options.motionState.getOptions(),
-	// 						initial: {
-	// 							scaleX: transform.scaleX,
-	// 							scaleY: transform.scaleY,
-	// 							x: transform.translateX,
-	// 							y: transform.translateY,
-	// 							borderRadius: sourceData.borderRadius,
-	// 						},
-	// 						animate: {
-	// 							scaleX: [transform.scaleX],
-	// 							scaleY: [transform.scaleY],
-	// 							x: [transform.translateX, 0],
-	// 							y: [transform.translateY, 0],
-	// 							borderRadius: [sourceData.borderRadius, target.borderRadius],
-	// 						},
-	// 					})
-	// 				})
-	// 				//
-	// 			}
-	// 		})
-	// 	})
-
-	// Handle for Shared Layout (Detect with simply mount and unmount)
 	onMount(() => {
 		const ref = el()
 		const layoutId = options.layoutId
@@ -449,48 +139,75 @@ export function createAndBindLayoutState(
 
 		const sourceData = layoutStore.sourceDataByLayoutId.get(layoutId)
 		if (!sourceData) return
+		// console.log({
+		// 	sourceData,
+		// 	targetData: ref.getBoundingClientRect(),
+		// })
 
-		const transform = copyTransformFromRect(
-			{
-				borderRadius: sourceData.borderRadius,
-				domRect: sourceData.domRect,
-			},
-			el()!.getBoundingClientRect(),
-		)
+		const transform = copyTransformFromRect(sourceData, el()!.getBoundingClientRect())
+		// console.log("transform from copy", transform)
 
 		const target = {
 			borderRadius: getComputedStyle(el()!).borderRadius,
 		}
 
-		requestAnimationFrame(() => {
-			options.motionState.update({
-				...options.motionState.getOptions(),
-				animate: {
-					scaleX: [transform.scaleX],
-					scaleY: [transform.scaleY],
-					x: [transform.translateX, 0],
-					y: [transform.translateY, 0],
-					borderRadius: [sourceData.borderRadius, target.borderRadius],
-				},
-			})
+		animate(ref, {
+			scaleX: [transform.scaleX],
+			scaleY: [transform.scaleY],
+			x: [transform.translateX, 0],
+			y: [transform.translateY, 0],
+			borderRadius: [sourceData.borderRadius, target.borderRadius],
 		})
 	})
 	onCleanup(() => {
 		const ref = el()
 		const layoutId = options.layoutId
 
+		if (options.layout) return // Don't set to global store here when layout, this is based on the parent.
+
 		if (!ref || !layoutId) return
-		const borderRadius = getComputedStyle(ref).borderRadius
-		const domRect = ref.getBoundingClientRect()
+		const sourceData = captureElementState(ref)
 
 		// Set to global store.
-		setSourceData(layoutId, {
-			borderRadius: borderRadius,
-			domRect: domRect,
+		setSourceData(layoutId, sourceData)
+	})
+}
+
+/** @internal Used for layout changes based on parent. */
+export function useParentStylesChanged(
+	el: () => HTMLElement | null,
+	options: {
+		layout?: true
+		layoutId?: string
+	},
+) {
+	const {setSourceData} = rootlessLayoutStore
+	const generateRandom = () => {
+		return crypto.getRandomValues(new Uint32Array(1))[0] as number
+	}
+	const [parentStyledChangedHash, setParentStyleChangedHash] = createSignal(generateRandom())
+
+	onMount(() => {
+		const ref = el()
+		if (!ref || !options.layout || !options.layoutId || !ref.parentElement) return
+
+		const parent = ref.parentElement
+		const originalSetProperty = parent.style.setProperty.bind(parent.style)
+		const layoutId = options.layoutId
+
+		parent.style.setProperty = (property: string, value: string | null, priority?: string) => {
+			const sourceData = captureElementState(el()!)
+			setSourceData(layoutId, sourceData)
+
+			setParentStyleChangedHash(generateRandom())
+			originalSetProperty(property, value, priority)
+		}
+
+		onCleanup(() => {
+			// Restore the original setProperty function to avoid side effects.
+			parent.style.setProperty = originalSetProperty
 		})
 	})
 
-	// createEffect(() => {
-	// 	console.log(options.key, "changed")
-	// })
+	return parentStyledChangedHash
 }
