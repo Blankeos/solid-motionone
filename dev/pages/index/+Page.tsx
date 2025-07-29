@@ -30,12 +30,13 @@ export default function Page(): JSX.Element {
 				</motion.div>
 
 				<motion.button
-					animate={{rotate: 90, backgroundColor: "yellow"}}
+					animate={{scale: 1, rotate: 90, backgroundColor: "yellow"}}
 					whileHover={{
-						scale: 2,
+						scale: 3,
 					}}
 					transition={{
-						duration: 3,
+						duration: 1,
+						type: "spring",
 					}}
 				>
 					Rotate and color change
@@ -95,7 +96,7 @@ function SwitchLayoutExample() {
 					width: "20px",
 					"border-radius": "9999px",
 				}}
-				transition={{duration: 5}}
+				transition={{duration: 0.3}}
 			></motion.div>
 		</button>
 	)
@@ -191,10 +192,9 @@ function SharedLayoutExample() {
 											right: "0",
 											height: "5px",
 											"z-index": 50,
-											background: "yellow",
+											background: "blue",
 										}}
 										layoutId="underline" // Motion One's equivalent to Framer Motion's layoutId for shared layout transitions
-										transition={{duration: 0.3}}
 									/>
 								</Show>
 							</li>
@@ -310,6 +310,7 @@ function StyleCorrectionExample() {
 				height: isOpen() ? "200px" : "100px",
 				display: "flex",
 			}}
+			transition={{type: "spring"}}
 			style={{
 				background: "gray",
 				"justify-content": "center",
