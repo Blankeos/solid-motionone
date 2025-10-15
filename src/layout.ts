@@ -155,13 +155,15 @@ export function createAndBindLayoutState(
 		animate(
 			ref,
 			{
-				scaleX: [transform.scaleX],
-				scaleY: [transform.scaleY],
+				scaleX: [transform.scaleX, 1],
+				scaleY: [transform.scaleY, 1],
 				x: [transform.translateX, 0],
 				y: [transform.translateY, 0],
 				borderRadius: [sourceData.borderRadius, target.borderRadius],
 			},
-			{...options.transition},
+			{
+				...options.transition,
+			},
 		)
 	})
 	onCleanup(() => {
