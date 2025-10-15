@@ -7,6 +7,13 @@ import {ParentContext} from "./motion.jsx"
 export type MotionEventHandlers = {}
 
 export type MotionComponentProps = ParentProps<MotionEventHandlers> & {
+	/**
+	 * Yes, normally in SolidJS this is not needed. But for layout animations because of solid's nature to only run a component body once.
+	 * never call `onCleanup()` (which is essential to tracking layout), we can't force components to re-render.
+	 *
+	 * Passing a key will force You'll only need to pass key for "Reorder animation" in lists.
+	 **/
+	key?: string | number
 	/** For single life-cycle layout animations. */
 	layout?: true
 	/** For shared mount/unmount layout animations. */
@@ -141,8 +148,15 @@ export default function MotionComp(
 		layoutId: layoutId(),
 	})
 
+	// A layout change is when 'parent' changed OR this current component's hash changed.
+	const layoutChangedHash = createMemo(() =>
+		props.layoutId !== undefined
+			? parentStyleChangedHash() + props.layoutId.toString()
+			: parentStyleChangedHash(),
+	)
+
 	return (
-		<Show when={parentStyleChangedHash()} keyed>
+		<Show when={layoutChangedHash()} keyed>
 			{_parentStyleChangedHash => {
 				createAndBindLayoutState(() => root as HTMLElement, {
 					layout: props.layout,

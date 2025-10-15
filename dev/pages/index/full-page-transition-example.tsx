@@ -44,7 +44,11 @@ const cards = [
 	},
 ]
 
-export function FullPageTransitionDemo() {
+function easeOutQuart(x: number): number {
+	return 1 - Math.pow(1 - x, 4)
+}
+
+export function FullPageTransitionExample() {
 	const [selectedCard, setSelectedCard] = createSignal<(typeof cards)[number] | null>(null)
 
 	return (
@@ -54,43 +58,56 @@ export function FullPageTransitionDemo() {
 					{(card, i) => {
 						const isSelected = () => selectedCard()?.id === card.id
 						return (
-							<Show
-								when={!isSelected()}
-								fallback={<li class="w-full h-full bg-green-200">ads</li>}
-							>
+							<Show when={!isSelected()} fallback={<div class="" />}>
 								<motion.li
-									class="relative aspect-square rounded-xl overflow-hidden bg-gray-100"
+									class="relative aspect-square rounded-xl bg-gray-100 overflow-hidden"
 									layoutId={`card-${card.id}`}
+									transition={{ease: easeOutQuart, duration: 2}}
 								>
 									<motion.div
 										class="relative w-full h-full"
 										layoutId={`content-container-${card.id}`}
+										transition={{ease: easeOutQuart, duration: 2}}
 									>
 										<motion.div
 											class="relative w-full h-full"
 											layoutId={`content-${card.id}`}
+											transition={{ease: easeOutQuart, duration: 2}}
 										>
 											<motion.div
 												class="absolute inset-0"
-												layoutId={`image-container-${card.id}`}
+												// layout
+												// layoutId={`image-container-${card.id}`}
+												transition={{ease: easeOutQuart, duration: 2}}
 											>
 												<img
 													class="w-full h-full object-cover"
 													src={card.image}
 													alt=""
-													style={card.imageOffset}
 												/>
 											</motion.div>
 											<motion.div
-												class="absolute bottom-4 left-4 right-4"
+												class="absolute top-0 left-0 p-6 md:p-8 text-white opacity-0 max-w-xs"
 												layoutId={`title-${card.id}`}
+												transition={{ease: easeOutQuart, duration: 2}}
 											>
-												<span class="text-xs text-white/80 uppercase tracking-wide">
+												<span class="text-sm text-gray-50 uppercase tracking-wide">
 													{card.label}
 												</span>
-												<h2 class="text-lg font-bold text-white leading-tight">
+												<h2 class="text-2xl md:text-3xl mt-2">
 													{card.title}
 												</h2>
+											</motion.div>
+											<motion.div
+												layoutId={`card-content-${card.id}`}
+												class="absolute -bottom-full right-0 left-0 bg-gray-800 opacity-100"
+												transition={{ease: easeOutQuart, duration: 2}}
+											>
+												<div class="px-6 pt-6 md:px-8 pb-6 md:pb-8">
+													<p class="text-gray-200 leading-relaxed">
+														{card.content}
+													</p>
+												</div>
 											</motion.div>
 											<a
 												class="absolute inset-0"
@@ -109,87 +126,69 @@ export function FullPageTransitionDemo() {
 				</For>
 			</motion.ul>
 
-			{(() => {
-				const [on, setOn] = createSignal(false)
+			<motion.div class="pointer-events-none">
+				<Show when={selectedCard()}>
+					<motion.div
+						class="fixed inset-0 z-50 bg-black/80 pointer-events-auto"
+						initial={{opacity: 0}}
+						animate={{opacity: 1}}
+						exit={{opacity: 0}}
+						transition={{duration: 0.3}}
+						onClick={e => {
+							e.preventDefault()
+							setSelectedCard(null)
+						}}
+					/>
+				</Show>
 
-				return (
-					<div class="mt-8 flex justify-center">
-						<motion.div
-							class="w-16 h-8 bg-gray-300 rounded-full relative cursor-pointer"
-							onClick={() => {
-								setOn(!on())
-							}}
-						>
-							<Show
-								when={on()}
-								fallback={
-									<motion.div
-										id="switch-toggle-a"
-										class="w-6 h-6 bg-white rounded-full absolute top-1 right-1 shadow-md"
-										layoutId="switch-knob"
-									/>
-								}
-							>
-								<motion.div
-									id="switch-toggle-b"
-									class="w-6 h-6 bg-white rounded-full absolute top-1 left-1 shadow-md"
-									layoutId="switch-knob"
-								/>
-							</Show>
-						</motion.div>
-					</div>
-				)
-			})()}
-
-			<Show when={selectedCard()}>
-				{card => (
-					<div class="fixed inset-0 z-50">
-						<motion.div
-							class="fixed inset-0 bg-black/80"
-							initial={{opacity: 0}}
-							animate={{opacity: 1}}
-							exit={{opacity: 0}}
-							transition={{duration: 0.3}}
-							onClick={() => setSelectedCard(null)}
-						/>
-
-						<motion.div
-							class="fixed inset-4 md:inset-8 flex items-center justify-center pointer-events-none"
-							layoutId={`card-${card().id}`}
-						>
+				<Show when={selectedCard()}>
+					{card => (
+						<motion.div class="fixed inset-0 z-60 flex items-center justify-center pointer-events-none">
 							<motion.div
-								class="relative w-full max-w-2xl max-h-full bg-background rounded-2xl overflow-hidden pointer-events-auto"
-								layoutId={`content-container-${card().id}`}
+								class="relative w-full max-w-2xl max-h-full bg-white rounded-[45px] overflow-hidden"
+								layoutId={`card-${card().id}`}
+								transition={{ease: easeOutQuart, duration: 2}}
 							>
 								<motion.div
-									class="relative w-full h-64 md:h-80"
-									layoutId={`image-container-${card().id}`}
+									class="relative w-full h-[760px]"
+									// layout
+									// layoutId={`image-container-${card().id}`}
+									transition={{ease: easeOutQuart, duration: 2}}
 								>
 									<img
 										class="w-full h-full object-cover"
 										src={card().image}
 										alt=""
-										style={card().imageOffset}
 									/>
 								</motion.div>
-								<motion.div class="p-6 md:p-8" layoutId={`title-${card().id}`}>
-									<span class="text-sm text-muted-foreground uppercase tracking-wide">
+
+								<motion.div
+									class="absolute top-0 left-0 p-6 md:p-8 text-white max-w-xs"
+									layoutId={`title-${card().id}`}
+									transition={{ease: easeOutQuart, duration: 2}}
+								>
+									<span class="text-sm text-gray-50 uppercase tracking-wide">
 										{card().label}
 									</span>
-									<h2 class="text-2xl md:text-3xl font-bold mt-2">
-										{card().title}
-									</h2>
+									<h2 class="text-2xl md:text-3xl mt-2">{card().title}</h2>
 								</motion.div>
-								<div class="px-6 md:px-8 pb-6 md:pb-8">
-									<p class="text-muted-foreground leading-relaxed">
-										{card().content}
-									</p>
-								</div>
+
+								<motion.div
+									layoutId={`card-content-${card().id}`}
+									class="absolute bottom-0 right-0 left-0 bg-gray-800"
+									transition={{ease: easeOutQuart, duration: 2}}
+								>
+									<div class="px-6 pt-6 md:px-8 pb-6 md:pb-8">
+										<p class="text-gray-200 leading-relaxed">
+											{card().content}
+										</p>
+									</div>
+								</motion.div>
 							</motion.div>
 						</motion.div>
-					</div>
-				)}
-			</Show>
+					)}
+				</Show>
+			</motion.div>
 		</div>
 	)
 }

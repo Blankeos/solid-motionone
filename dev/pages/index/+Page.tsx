@@ -1,8 +1,9 @@
-import {createSignal, For, onCleanup, onMount, Show} from "solid-js"
+import {createSignal, For, Index, onCleanup, onMount, Show} from "solid-js"
 import type {JSX} from "solid-js/h/jsx-runtime"
 import {Motion, Presence} from "../../../src"
 import {rootlessLayoutStore} from "../../../src/layout"
 import {motion} from "../../../src/motion-new"
+import {FullPageTransitionExample} from "./full-page-transition-example"
 
 export default function Page(): JSX.Element {
 	const [isOn, setIsOn] = createSignal(false)
@@ -177,7 +178,7 @@ function SharedLayoutExample() {
 								<span>{`${item.icon} ${item.label}`}</span>
 								<Show when={item === selectedTab()}>
 									<motion.div
-										class={`absolute bottom-0 left-0 right-0 z-50 bg-blue-500 ${index() === 1 || index() === 2 ? "h-4" : "h-1"}`}
+										class={`absolute bottom-0 left-0 right-0 z-50 bg-blue-500 h-1`}
 										layoutId="underline"
 									/>
 								</Show>
@@ -209,17 +210,25 @@ function SharedLayoutExample() {
 
 //  -----
 
+const initialOrder = ["#ff0088", "#dd00ee", "#9911ff", "#0d63f8"]
+
 function ReorderExample() {
 	const [order, setOrder] = createSignal(initialOrder)
 
 	onMount(() => {
-		const timeout = setInterval(() => {
+		const interval = setInterval(() => {
 			const copy = structuredClone(shuffle(order()))
-			setOrder([])
-			setOrder(copy)
+			setOrder(prev => copy)
 		}, 900)
 
-		onCleanup(() => clearTimeout(timeout))
+		setTimeout(() => {
+			setOrder(prev => [...prev, "#ff5500"])
+			setTimeout(() => {
+				setOrder(prev => [...prev, "#00ff55"])
+			}, 2000)
+		}, 2000)
+
+		onCleanup(() => clearTimeout(interval))
 	})
 
 	return (
@@ -238,29 +247,27 @@ function ReorderExample() {
 				"align-items": "center",
 			}}
 		>
-			<For each={order()}>
+			<Index each={order()}>
 				{(backgroundColor, index) => (
-					<ReorderItem
-						layoutId={`item-${backgroundColor}}`}
-						backgroundColor={backgroundColor}
-					/>
+					<ReorderItem key={backgroundColor()} backgroundColor={backgroundColor()} />
 				)}
-			</For>
+			</Index>
 		</ul>
 	)
 }
 
-function ReorderItem(props: {layoutId: string; backgroundColor: string}) {
+function ReorderItem(props: {key: string; backgroundColor: string}) {
 	const [c, setC] = createSignal(0)
 	return (
 		<motion.li
-			layoutId={props.layoutId}
+			layoutId={props.key}
 			style={{
 				width: "100px",
 				height: "100px",
 				"border-radius": "10px",
 				"background-color": props.backgroundColor,
 			}}
+			class="flex items-center justify-center text-white"
 			onClick={() => setC(c() + 1)}
 		>
 			{c()}
@@ -276,18 +283,18 @@ function StyleCorrectionExample() {
 	return (
 		<motion.div
 			data-isOpen={isOpen()}
-			initial={{borderRadius: 50}}
 			animate={{
 				width: isOpen() ? "400px" : "100px",
 				height: isOpen() ? "200px" : "100px",
-				display: "flex",
+				borderRadius: isOpen() ? "40px" : "12px",
 			}}
 			transition={{type: "spring"}}
 			style={{
-				background: "gray",
 				"justify-content": "center",
 				"align-items": "center",
+				display: "flex",
 			}}
+			class="bg-black"
 			onClick={() => setIsOpen(!isOpen())}
 		>
 			<motion.div
@@ -295,196 +302,16 @@ function StyleCorrectionExample() {
 				style={{
 					width: "40px",
 					height: "40px",
-					background: "#f107a3",
 					"border-radius": "50%",
 				}}
+				class="bg-amber-500"
+				layout
 			/>
 		</motion.div>
 	)
 }
 
 // -----
-
-const initialOrder = ["#ff0088", "#dd00ee", "#9911ff", "#0d63f8"]
-
-const cards = [
-	{
-		id: "travel",
-		label: "Travel",
-		title: "5 Inspiring Apps for Your Next Trip",
-		image: "https://examples.motion.dev/photos/app-store/a.jpg",
-		imageOffset: {top: "-300px", width: "100%"},
-		content:
-			"Love to travel? So do the makers of these five subscription apps. For a small monthly fee, they'll help you find the best deals on flights, hotels, and some other stuff we turn a blind eye to. Plan your perfect itinerary with intelligent recommendations based on your interests, time, and credit history.",
-		contentClass: "content-container small",
-	},
-	{
-		id: "howto",
-		label: "How to",
-		title: "Contemplate the Meaning of Life Twice a Day",
-		image: "https://examples.motion.dev/photos/app-store/c.jpg",
-		imageOffset: {bottom: "-50px", width: "110%", left: "-20px"},
-		content:
-			"Take a moment each morning and evening to reflect on your existence. This simple practice can help you find clarity and purpose in your daily life. Remember to breathe deeply and consider the vastness of the cosmos.",
-		contentClass: "content-container small",
-	},
-	{
-		id: "steps",
-		label: "Steps",
-		title: "Urban Exploration Apps for the Vertically-Inclined",
-		image: "https://examples.motion.dev/photos/app-store/d.jpg",
-		imageOffset: {width: "200%", left: "-100px"},
-		content:
-			"Get off the beaten path. Find the best views, skywalks, and elevated gardens in your city.\n\nLocked door? No problem! This app crowdsources the access code to every door in your city.",
-		contentClass: "content-container small",
-	},
-	{
-		id: "hats",
-		label: "Hats",
-		title: "Take Control of Your Hat Life With This Stunning New App",
-		image: "https://examples.motion.dev/photos/app-store/b.jpg",
-		imageOffset: {bottom: "-100px", width: "100%"},
-		content:
-			"Whether you're serious hat enthusiast, or just a filthy casual, this new app revolutionizes how you organize, care for, and expand your hat collection.\n\nStay up to date with the latest hat trends, get personalized hat care reminders, and use predictive analytics to discover the last place you left your hat.\n\nWhy follow the crowd when you can be the crowd?",
-		contentClass: "content-container small",
-	},
-]
-
-export function FullPageTransitionExample() {
-	const [selectedCard, setSelectedCard] = createSignal<string | null>(null)
-
-	return (
-		<div class="bg-white rounded-2xl overflow-auto w-full h-full p-4 md:p-8">
-			<motion.ul
-				class="grid grid-cols-2 gap-4 max-w-4xl mx-auto"
-				initial={{opacity: 0}}
-				animate={{opacity: 1}}
-				transition={{duration: 0.5}}
-			>
-				<For each={cards}>
-					{(card, i) => {
-						const isSelected = () => selectedCard() === card.id
-						return (
-							<Show when={!isSelected()}>
-								<motion.li
-									class="relative aspect-square rounded-xl overflow-hidden bg-gray-100"
-									initial={{opacity: 0, y: 20}}
-									animate={{opacity: 1, y: 0}}
-									transition={{delay: i() * 0.1, duration: 0.4}}
-									layoutId={`card-${card.id}`}
-								>
-									<motion.div
-										class="relative w-full h-full"
-										layoutId={`content-container-${card.id}`}
-									>
-										<motion.div
-											class="relative w-full h-full"
-											initial={{opacity: 0}}
-											animate={{opacity: 1}}
-											transition={{delay: i() * 0.1 + 0.2, duration: 0.3}}
-											layoutId={`content-${card.id}`}
-										>
-											<motion.div
-												class="absolute inset-0"
-												layoutId={`image-container-${card.id}`}
-											>
-												<img
-													class="w-full h-full object-cover"
-													src={card.image}
-													alt=""
-												/>
-											</motion.div>
-											<motion.div
-												class="absolute bottom-4 left-4 right-4"
-												layoutId={`title-${card.id}`}
-											>
-												<span class="text-xs text-white/80 uppercase tracking-wide">
-													{card.label}
-												</span>
-												<h2 class="text-lg font-bold text-white leading-tight">
-													{card.title}
-												</h2>
-											</motion.div>
-											<a
-												class="absolute inset-0"
-												href="#"
-												onClick={e => {
-													e.preventDefault()
-													setSelectedCard(card.id)
-												}}
-											/>
-										</motion.div>
-									</motion.div>
-								</motion.li>
-							</Show>
-						)
-					}}
-				</For>
-			</motion.ul>
-			{selectedCard() && (
-				<motion.div
-					class="fixed inset-0 z-50 bg-black/80"
-					initial={{opacity: 0}}
-					animate={{opacity: 1}}
-					exit={{opacity: 0}}
-					transition={{duration: 0.3}}
-				>
-					<a
-						class="absolute inset-0"
-						href="#"
-						onClick={e => {
-							e.preventDefault()
-							setSelectedCard(null)
-						}}
-					/>
-					<For each={cards}>
-						{card => {
-							if (selectedCard() !== card.id) return null
-							return (
-								<motion.div
-									class="fixed inset-4 md:inset-8 flex items-center justify-center"
-									layoutId={`content-container-${card.id}`}
-								>
-									<motion.div
-										class="relative w-full max-w-2xl max-h-full bg-white rounded-2xl overflow-hidden"
-										layoutId={`content-${card.id}`}
-									>
-										<motion.div
-											class="relative w-full h-64 md:h-80"
-											layoutId={`image-container-${card.id}`}
-										>
-											<img
-												class="w-full h-full object-cover"
-												src={card.image}
-												alt=""
-											/>
-										</motion.div>
-										<motion.div
-											class="p-6 md:p-8"
-											layoutId={`title-${card.id}`}
-										>
-											<span class="text-sm text-gray-500 uppercase tracking-wide">
-												{card.label}
-											</span>
-											<h2 class="text-2xl md:text-3xl font-bold mt-2">
-												{card.title}
-											</h2>
-										</motion.div>
-										<div class="px-6 md:px-8 pb-6 md:pb-8">
-											<p class="text-gray-700 leading-relaxed">
-												{card.content}
-											</p>
-										</div>
-									</motion.div>
-								</motion.div>
-							)
-						}}
-					</For>
-				</motion.div>
-			)}
-		</div>
-	)
-}
 
 /**
  * ==============   Utils   ================

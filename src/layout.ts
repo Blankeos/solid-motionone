@@ -1,10 +1,11 @@
 import {animate, AnimationOptions} from "motion"
-import {createRoot, createSignal, onCleanup, onMount} from "solid-js"
+import {Accessor, createRoot, createSignal, onCleanup, onMount} from "solid-js"
 import {createStore, produce} from "solid-js/store"
 
 type SourceData = {
 	domRect: DOMRect
 	borderRadius: string
+	opacity: string
 }
 
 type LayoutStore = {
@@ -35,12 +36,12 @@ function createRootlessLayoutStore() {
 		// console.log("layoutStore", unwrap(layoutStore).sourceDataByLayoutId)
 	}
 
-	/** @deprecated for demonstration purposes only */
+	/** @deprecated for demonstration purposes of a global store only*/
 	function increment(): void {
 		setLayoutStore("count", draft => draft + 1)
 	}
 
-	/** @deprecated for demonstration purposes only */
+	/** @deprecated for demonstration purposes of a global store only */
 	function decrement(): void {
 		setLayoutStore("count", draft => draft - 1)
 	}
@@ -70,7 +71,7 @@ export const rootlessLayoutStore = createRoot(createRootlessLayoutStore)
  * - [ ] border
  * - [ ] color
  * - [ ] rotation
- * - [ ] opacity
+ * - [x] opacity
  */
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function copyTransformFromRect(source: SourceData, target: DOMRect) {
@@ -109,6 +110,7 @@ export function copyTransformFromRect(source: SourceData, target: DOMRect) {
 		scaleX,
 		scaleY,
 		borderRadius: source.borderRadius,
+		opacity: source.opacity,
 	}
 }
 
@@ -118,6 +120,7 @@ const captureElementState = (element: HTMLElement) => {
 	return {
 		domRect,
 		borderRadius: computedStyle.borderRadius,
+		opacity: computedStyle.opacity,
 	}
 }
 
@@ -150,6 +153,7 @@ export function createAndBindLayoutState(
 
 		const target = {
 			borderRadius: getComputedStyle(el()!).borderRadius,
+			opacity: getComputedStyle(el()!).opacity,
 		}
 
 		animate(
@@ -160,6 +164,7 @@ export function createAndBindLayoutState(
 				x: [transform.translateX, 0],
 				y: [transform.translateY, 0],
 				borderRadius: [sourceData.borderRadius, target.borderRadius],
+				opacity: [parseFloat(sourceData.opacity), parseFloat(target.opacity)],
 			},
 			{
 				...options.transition,
@@ -180,19 +185,19 @@ export function createAndBindLayoutState(
 	})
 }
 
-/** @internal Used for layout changes based on parent. */
+/** @internal Used for layout changes based on parent. (i.e. passing `layout` on a switch thumb) */
 export function useParentStylesChanged(
 	el: () => HTMLElement | null,
 	options: {
 		layout?: true
 		layoutId?: string
 	},
-) {
+): Accessor<number> {
 	const {setSourceData} = rootlessLayoutStore
-	const generateRandom = () => {
+	const generateRandom = (): number => {
 		return crypto.getRandomValues(new Uint32Array(1))[0] as number
 	}
-	const [parentStyledChangedHash, setParentStyleChangedHash] = createSignal(generateRandom())
+	const [parentStyledChangedHash, setParentStyleChangedHash] = createSignal(generateRandom()) // This is what we use to "signal" a change in parent
 
 	onMount(() => {
 		const ref = el()
